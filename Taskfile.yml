@@ -44,7 +44,7 @@ tasks:
 
   deps:fe:
     desc: Installs nodejs requirements
-    dir: web
+    dir: frontend
     cmds:
       - npm install
 
@@ -73,26 +73,21 @@ tasks:
       IMPORT: "github.com/GlobalArtInc/aldisui"
 
   build:fe:
-    desc: Build VueJS project
-    dir: web
+    desc: Build the Angular application
+    dir: frontend
     sources:
       - src/*.*
       - src/**/*.*
-      - public/index.html
-      - public/favicon.ico
+      - angular.json
       - package.json
       - package-lock.json
-      - babel.config.js
-      - vue.config.js
+      - tsconfig.json
+      - tsconfig.app.json
     generates:
-      - ../api/public/css/*.css
-      - ../api/public/js/*.js
       - ../api/public/index.html
       - ../api/public/favicon.ico
     cmds:
-      - >-
-        {{ if eq OS "windows" }}set VUE_APP_BUILD_TYPE={{ .APP_BUILD_TYPE }} && {{ else }}env VUE_APP_BUILD_TYPE={{ .APP_BUILD_TYPE }}{{ end }}
-        npm run build
+      - npm run build
 
   build:be:
     desc: Build server binary
@@ -113,13 +108,7 @@ tasks:
 
   lint:
     cmds:
-      - task: lint:fe
       - task: lint:be
-
-  lint:fe:
-    dir: web
-    cmds:
-      - npm run lint
 
   lint:be:
     cmds:
@@ -132,9 +121,9 @@ tasks:
       - task: test:be
 
   test:fe:
-    dir: web
+    dir: frontend
     cmds:
-      - npm run test:unit
+      - npm test
 
   test:be:
     desc: Run go code tests
@@ -148,7 +137,7 @@ tasks:
 
   dredd:deps:
     desc: Installs dredd dep for integration testing
-    dir: web
+    dir: frontend
     cmds:
       - npm install dredd@13.1.2
 
@@ -161,12 +150,12 @@ tasks:
   dredd:test:
     desc: Run end to end test for API with dredd
     cmds:
-      - ./web/node_modules/.bin/dredd --config .dredd/dredd.testing.yml
+      - ./frontend/node_modules/.bin/dredd --config .dredd/dredd.testing.yml
 
   dredd:test:local:
     desc: Run end to end test for API with dredd
     cmds:
-      - ./web/node_modules/.bin/dredd --config .dredd/dredd.local.yml
+      - ./frontend/node_modules/.bin/dredd --config .dredd/dredd.local.yml
 
   release:prod:
     desc: Create and publish a release

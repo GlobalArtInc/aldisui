@@ -4,7 +4,6 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { firstValueFrom } from 'rxjs';
 import {
-  UiBadgeComponent,
   UiDataTableComponent,
   UiPageHeaderComponent,
   UiTdDirective,
@@ -21,7 +20,6 @@ import { statusAccent, statusLabel, statusTone, taskDuration } from '../../../co
     DatePipe,
     RouterLink,
     TranslatePipe,
-    UiBadgeComponent,
     UiDataTableComponent,
     UiPageHeaderComponent,
     UiTdDirective,

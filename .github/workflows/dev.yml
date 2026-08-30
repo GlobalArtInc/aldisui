@@ -27,7 +27,7 @@ jobs:
         with:
           node-version: '24'
           cache: 'npm'
-          cache-dependency-path: web/package-lock.json
+          cache-dependency-path: frontend/package-lock.json
 
       - name: Install go-task
         run: |
@@ -42,7 +42,7 @@ jobs:
 
       - name: Check modification
         run: |
-          git diff --exit-code --stat -- . ':(exclude)web/package.json' ':(exclude)web/package-lock.json' ':(exclude)go.mod' ':(exclude)go.sum'
+          git diff --exit-code --stat -- . ':(exclude)frontend/package.json' ':(exclude)frontend/package-lock.json' ':(exclude)go.mod' ':(exclude)go.sum'
 
       - name: Run tests
         run: task test
@@ -274,7 +274,7 @@ jobs:
         with:
           node-version: '24'
           cache: 'npm'
-          cache-dependency-path: web/package-lock.json
+          cache-dependency-path: frontend/package-lock.json
 
       - name: Install go-task
         run: |
@@ -361,7 +361,7 @@ jobs:
         with:
           node-version: '24'
           cache: 'npm'
-          cache-dependency-path: web/package-lock.json
+          cache-dependency-path: frontend/package-lock.json
 
       - name: Install go-task
         run: |
@@ -447,7 +447,7 @@ jobs:
         with:
           node-version: '24'
           cache: 'npm'
-          cache-dependency-path: web/package-lock.json
+          cache-dependency-path: frontend/package-lock.json
 
       - name: Install go-task
         run: |
@@ -518,7 +518,7 @@ jobs:
         with:
           node-version: '24'
           cache: 'npm'
-          cache-dependency-path: web/package-lock.json
+          cache-dependency-path: frontend/package-lock.json
 
       - name: Install go-task
         run: |

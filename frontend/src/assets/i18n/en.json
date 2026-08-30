@@ -556,5 +556,6 @@
   "status_rejected": "Rejected",
   "status_running": "Running",
   "status_stopping": "Stopping",
-  "arguments": "Arguments"
+  "arguments": "Arguments",
+  "stats": "Stats"
 }

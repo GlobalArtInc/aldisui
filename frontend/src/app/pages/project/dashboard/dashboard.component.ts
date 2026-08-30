@@ -1,99 +1,176 @@
-import { DatePipe } from '@angular/common';
+import { DatePipe, KeyValuePipe } from '@angular/common';
 import { Component, computed, inject, signal } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
-import { TranslatePipe } from '@ngx-translate/core';
+import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { ActivatedRoute, RouterLink } from '@angular/router';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { firstValueFrom } from 'rxjs';
 import {
   UiBadgeComponent,
   UiButtonDirective,
   UiCardComponent,
+  UiDataTableComponent,
   UiEmptyStateComponent,
-  UiIconComponent,
+  UiFieldDirective,
+  UiInputDirective,
+  UiLabelDirective,
   UiPageHeaderComponent,
-  UiSpinnerComponent,
   UiStatComponent,
-  UiTableDirective,
-  UiTableWrapDirective,
+  UiSwitchComponent,
+  UiTabsComponent,
   UiTdDirective,
-  UiThDirective,
-  UiTrDirective,
+  type UiColumn,
+  type UiTab,
 } from '@globalart/platform-ui';
 import { ApiService } from '../../../core/api.service';
-import type { Task, Template } from '../../../core/models';
+import type { Project, Task, TaskStat } from '../../../core/models';
 import { ProjectService } from '../../../core/project.service';
 import { statusLabel, statusTone, taskDuration } from '../../../core/task-status';
+
+interface ProjectEvent {
+  description: string;
+  created: string;
+  username?: string;
+  object_type?: string;
+}
 
 @Component({
   selector: 'aldis-project-dashboard',
   standalone: true,
   imports: [
     DatePipe,
+    KeyValuePipe,
+    ReactiveFormsModule,
     RouterLink,
     TranslatePipe,
     UiBadgeComponent,
     UiButtonDirective,
     UiCardComponent,
+    UiDataTableComponent,
     UiEmptyStateComponent,
-    UiIconComponent,
+    UiFieldDirective,
+    UiInputDirective,
+    UiLabelDirective,
     UiPageHeaderComponent,
-    UiSpinnerComponent,
     UiStatComponent,
-    UiTableDirective,
-    UiTableWrapDirective,
+    UiSwitchComponent,
+    UiTabsComponent,
     UiTdDirective,
-    UiThDirective,
-    UiTrDirective,
   ],
   templateUrl: './dashboard.component.html',
 })
 export class DashboardComponent {
   private readonly api = inject(ApiService);
-  private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
+  private readonly fb = inject(FormBuilder);
   private readonly projects = inject(ProjectService);
+  private readonly translate = inject(TranslateService);
 
+  readonly projectId = Number(this.route.parent?.snapshot.paramMap.get('id'));
   readonly project = this.projects.current;
-  readonly templates = signal<Template[]>([]);
-  readonly tasks = signal<Task[]>([]);
-  readonly loading = signal(true);
-  readonly running = signal<number | null>(null);
 
-  readonly succeeded = computed(() => this.tasks().filter((task) => task.status === 'success').length);
-  readonly failed = computed(() =>
-    this.tasks().filter((task) => task.status === 'error' || task.status === 'rejected').length,
+  readonly tasks = signal<Task[] | null>(null);
+  readonly stats = signal<TaskStat[]>([]);
+  readonly events = signal<ProjectEvent[]>([]);
+  readonly saving = signal(false);
+  readonly active = signal('history');
+
+  readonly settings = this.fb.nonNullable.group({
+    name: '',
+    max_parallel_tasks: 0,
+    alert: false,
+  });
+
+  private readonly labels = signal(0);
+
+  readonly tabs = computed<UiTab[]>(() => {
+    this.labels();
+    return ['history', 'stats', 'activity', 'settings'].map((id) => ({
+      id,
+      label: this.translate.instant(id) as string,
+    }));
+  });
+
+  readonly columns: UiColumn[] = [
+    { title: 'Task', width: '100px' },
+    { title: 'Version' },
+    { title: 'Status' },
+    { title: 'User' },
+    { title: 'Start' },
+    { title: 'Duration', align: 'right' },
+  ];
+
+  readonly countByStatus = computed(() => {
+    const totals: Record<string, number> = {};
+    for (const day of this.stats()) {
+      for (const [status, count] of Object.entries(day.count_by_status ?? {})) {
+        totals[status] = (totals[status] ?? 0) + count;
+      }
+    }
+    return totals;
+  });
+
+  readonly totalTasks = computed(() =>
+    Object.values(this.countByStatus()).reduce((sum, count) => sum + count, 0),
   );
-  readonly recent = computed(() => this.tasks().slice(0, 10));
 
   readonly statusTone = statusTone;
   readonly statusLabel = statusLabel;
   readonly duration = taskDuration;
 
+  readonly rowSearch = (row: Task, search: string): boolean =>
+    `${row.id} ${row.tpl_alias ?? ''} ${row.user_name ?? ''}`.toLowerCase().includes(search.toLowerCase());
+
   constructor() {
+    const bump = () => this.labels.update((value) => value + 1);
+    this.translate.onLangChange.subscribe(bump);
+    this.translate.onTranslationChange.subscribe(bump);
+
     void this.load();
   }
 
-  async run(template: Template): Promise<void> {
-    this.running.set(template.id);
+  count(status: string): number {
+    return this.countByStatus()[status] ?? 0;
+  }
+
+  select(tab: string): void {
+    this.active.set(tab);
+  }
+
+  async save(): Promise<void> {
+    this.saving.set(true);
     try {
-      const task = await firstValueFrom(
-        this.api.post<Task>(`project/${template.project_id}/tasks`, { template_id: template.id }),
+      const project = await firstValueFrom(
+        this.api.put<Project>(`project/${this.projectId}`, {
+          id: this.projectId,
+          ...this.settings.getRawValue(),
+        }),
       );
-      await this.router.navigate(['/project', template.project_id, 'tasks', task.id]);
+      this.projects.current.set(project ?? this.project());
     } finally {
-      this.running.set(null);
+      this.saving.set(false);
     }
   }
 
   private async load(): Promise<void> {
-    const id = this.project()?.id ?? Number(this.router.url.split('/')[2]);
-    this.loading.set(true);
+    const base = `project/${this.projectId}`;
 
-    const [templates, tasks] = await Promise.all([
-      firstValueFrom(this.api.get<Template[]>(`project/${id}/templates`)),
-      firstValueFrom(this.api.get<Task[]>(`project/${id}/tasks/last`, { limit: 50 })),
+    const [tasks, stats, events] = await Promise.all([
+      firstValueFrom(this.api.get<Task[]>(`${base}/tasks`, { limit: 200 })),
+      firstValueFrom(this.api.get<TaskStat[]>(`${base}/stats`)),
+      firstValueFrom(this.api.get<ProjectEvent[]>(`${base}/events`)),
     ]);
 
-    this.templates.set(templates ?? []);
     this.tasks.set(tasks ?? []);
-    this.loading.set(false);
+    this.stats.set(stats ?? []);
+    this.events.set(events ?? []);
+
+    const project = this.project();
+    if (project) {
+      this.settings.patchValue({
+        name: project.name,
+        max_parallel_tasks: project.max_parallel_tasks ?? 0,
+        alert: project.alert ?? false,
+      });
+    }
   }
 }

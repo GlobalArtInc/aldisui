@@ -1,0 +1,74 @@
+<ui-modal [open]="!!current()" [config]="config()" [loading]="busy()" (action)="action($event)" (closed)="closed.emit()">
+  <div class="flex flex-col gap-4">
+    <div uiField>
+      <label uiLabel for="task-message">{{ 'messageOptional' | translate }}</label>
+      <input
+        id="task-message"
+        uiInput
+        type="text"
+        [ngModel]="message()"
+        (ngModelChange)="message.set($event)" />
+    </div>
+
+    @for (variable of vars(); track variable.name) {
+      <div uiField>
+        <label uiLabel [attr.for]="'survey-' + variable.name">
+          {{ variable.title || variable.name }}{{ variable.required ? ' *' : '' }}
+        </label>
+
+        @switch (variable.type) {
+          @case ('enum') {
+            <ui-select
+              [items]="variable.values ?? []"
+              bindLabel="name"
+              bindValue="value"
+              [value]="value(variable.name)"
+              (valueChange)="set(variable.name, $event)"></ui-select>
+          }
+          @case ('select') {
+            <ui-select
+              [items]="variable.values ?? []"
+              bindLabel="name"
+              bindValue="value"
+              [value]="value(variable.name)"
+              (valueChange)="set(variable.name, $event)"></ui-select>
+          }
+          @case ('int') {
+            <input
+              [id]="'survey-' + variable.name"
+              uiInput
+              type="number"
+              [ngModel]="value(variable.name)"
+              (ngModelChange)="set(variable.name, $event)" />
+          }
+          @case ('text') {
+            <textarea
+              [id]="'survey-' + variable.name"
+              uiInput
+              rows="4"
+              [ngModel]="value(variable.name)"
+              (ngModelChange)="set(variable.name, $event)"></textarea>
+          }
+          @default {
+            <input
+              [id]="'survey-' + variable.name"
+              uiInput
+              type="text"
+              [ngModel]="value(variable.name)"
+              (ngModelChange)="set(variable.name, $event)" />
+          }
+        }
+
+        @if (variable.description) {
+          <span uiHint>{{ variable.description }}</span>
+        }
+      </div>
+    }
+
+    <div class="flex flex-wrap items-center gap-4">
+      <ui-switch [checked]="debug()" (checkedChange)="debug.set($event)" [label]="'debug' | translate"></ui-switch>
+      <ui-switch [checked]="dryRun()" (checkedChange)="dryRun.set($event)" [label]="'dryRun' | translate"></ui-switch>
+      <ui-switch [checked]="diff()" (checkedChange)="diff.set($event)" [label]="'diff' | translate"></ui-switch>
+    </div>
+  </div>
+</ui-modal>

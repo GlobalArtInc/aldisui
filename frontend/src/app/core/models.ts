@@ -51,6 +51,21 @@ export interface TaskOutput {
   output: string;
 }
 
+export interface SurveyVarValue {
+  name: string;
+  value: string;
+}
+
+export interface SurveyVar {
+  name: string;
+  title: string;
+  required?: boolean;
+  type?: '' | 'int' | 'enum' | 'text' | 'select';
+  description?: string;
+  values?: SurveyVarValue[];
+  default_value?: string | string[];
+}
+
 export interface Template {
   id: number;
   project_id: number;
@@ -67,6 +82,7 @@ export interface Template {
   view_id?: number;
   autorun?: boolean;
   tasks: number;
+  survey_vars?: SurveyVar[];
   last_task?: Task;
 }
 

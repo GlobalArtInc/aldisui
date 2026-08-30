@@ -12,6 +12,7 @@ import {
   type UiColumn,
 } from '@globalart/platform-ui';
 import { ApiService } from '../../../core/api.service';
+import { RunTaskDialogComponent } from '../run/run-task-dialog.component';
 import type { Task, Template } from '../../../core/models';
 import { statusLabel, statusTone } from '../../../core/task-status';
 
@@ -27,6 +28,7 @@ import { statusLabel, statusTone } from '../../../core/task-status';
     UiIconComponent,
     UiPageHeaderComponent,
     UiTdDirective,
+    RunTaskDialogComponent,
   ],
   templateUrl: './templates.component.html',
 })
@@ -37,7 +39,7 @@ export class TemplatesComponent {
 
   readonly projectId = Number(this.route.parent?.snapshot.paramMap.get('id'));
   readonly templates = signal<Template[] | null>(null);
-  readonly running = signal<number | null>(null);
+  readonly selected = signal<Template | null>(null);
 
   readonly columns: UiColumn[] = [
     { title: 'ID', width: '80px' },
@@ -60,15 +62,12 @@ export class TemplatesComponent {
     );
   }
 
-  async run(template: Template): Promise<void> {
-    this.running.set(template.id);
-    try {
-      const task = await firstValueFrom(
-        this.api.post<Task>(`project/${this.projectId}/tasks`, { template_id: template.id }),
-      );
-      await this.router.navigate(['/project', this.projectId, 'tasks', task.id]);
-    } finally {
-      this.running.set(null);
-    }
+  open(template: Template): void {
+    this.selected.set(template);
+  }
+
+  async started(task: Task): Promise<void> {
+    this.selected.set(null);
+    await this.router.navigate(['/project', this.projectId, 'tasks', task.id]);
   }
 }

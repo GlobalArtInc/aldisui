@@ -1,83 +1,114 @@
-<ui-page-header
-  [eyebrow]="'project' | translate"
-  [heading]="project()?.name ?? ('dashboard' | translate)"
-  [description]="'dashboard' | translate">
-  <a uiButton variant="primary" [routerLink]="['../templates']">
-    <ui-icon name="file-text" [size]="15"></ui-icon>
-    {{ 'taskTemplates' | translate }}
-  </a>
-</ui-page-header>
+<ui-page-header [eyebrow]="'project' | translate" [heading]="'dashboard' | translate"></ui-page-header>
 
-@if (loading()) {
-  <ui-spinner></ui-spinner>
-} @else {
-  <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-    <ui-stat [label]="'taskTemplates' | translate" [value]="templates().length" tone="signal"></ui-stat>
-    <ui-stat [label]="'history' | translate" [value]="tasks().length" tone="info"></ui-stat>
-    <ui-stat [label]="'status_success' | translate" [value]="succeeded()" tone="ok"></ui-stat>
-    <ui-stat [label]="'error' | translate" [value]="failed()" tone="danger"></ui-stat>
-  </div>
+<ui-tabs [tabs]="tabs()" [active]="active()" (activeChange)="select($event)"></ui-tabs>
 
-  <div class="grid gap-6 xl:grid-cols-2">
-    <ui-card [heading]="'taskTemplates' | translate" [eyebrow]="'run' | translate">
-      @if (templates().length === 0) {
-        <ui-empty-state icon="file-text" [heading]="'noTemplates' | translate"></ui-empty-state>
+@switch (active()) {
+  @case ('history') {
+    <ui-data-table
+      [columns]="columns"
+      [rows]="tasks()"
+      [rowTemplate]="taskRow"
+      [rowSearch]="rowSearch"
+      [pageSize]="20"
+      emptyIcon="activity"
+      [searchPlaceholder]="'search' | translate"
+      [emptyHeading]="'noTasks' | translate">
+    </ui-data-table>
+  }
+
+  @case ('stats') {
+    <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <ui-stat [label]="'history' | translate" [value]="totalTasks()" tone="signal"></ui-stat>
+      <ui-stat [label]="'status_success' | translate" [value]="count('success')" tone="ok"></ui-stat>
+      <ui-stat [label]="'status_failed' | translate" [value]="count('error')" tone="danger"></ui-stat>
+      <ui-stat
+        [label]="'status_stopped' | translate"
+        [value]="count('stopped')"
+        tone="neutral"></ui-stat>
+    </div>
+
+    <ui-card [heading]="'stats' | translate">
+      @if (stats().length === 0) {
+        <ui-empty-state icon="activity" [heading]="'noTasks' | translate"></ui-empty-state>
       } @else {
         <ul class="flex flex-col divide-y divide-line">
-          @for (template of templates().slice(0, 8); track template.id) {
-            <li class="flex items-center justify-between gap-3 py-2">
-              <a class="flex min-w-0 flex-col" [routerLink]="['../templates', template.id]">
-                <span class="truncate font-medium text-ink">{{ template.name }}</span>
-                <span class="truncate text-sm text-ink-muted">{{ template.playbook }}</span>
-              </a>
-
-              <div class="flex shrink-0 items-center gap-2">
-                @if (template.last_task; as last) {
-                  <ui-badge [tone]="statusTone(last.status)">{{ statusLabel(last.status) | translate }}</ui-badge>
+          @for (day of stats(); track day.date) {
+            <li class="flex items-center justify-between gap-4 py-2">
+              <span class="font-mono text-sm text-ink-muted">{{ day.date }}</span>
+              <span class="flex flex-wrap items-center gap-2">
+                @for (entry of day.count_by_status | keyvalue; track entry.key) {
+                  <ui-badge [tone]="statusTone($any(entry.key))">
+                    {{ statusLabel($any(entry.key)) | translate }}: {{ entry.value }}
+                  </ui-badge>
                 }
-                <button
-                  uiButton
-                  variant="secondary"
-                  size="sm"
-                  type="button"
-                  [disabled]="running() === template.id"
-                  (click)="run(template)">
-                  {{ 'run' | translate }}
-                </button>
-              </div>
+              </span>
             </li>
           }
         </ul>
       }
     </ui-card>
+  }
 
-    <ui-card [heading]="'history' | translate" [eyebrow]="'tasks' | translate">
-      @if (recent().length === 0) {
-        <ui-empty-state icon="activity" [heading]="'noTasks' | translate"></ui-empty-state>
+  @case ('activity') {
+    <ui-card [heading]="'activity' | translate">
+      @if (events().length === 0) {
+        <ui-empty-state icon="activity" [heading]="'none' | translate"></ui-empty-state>
       } @else {
-        <div uiTableWrap>
-          <table uiTable>
-            <thead>
-              <tr>
-                <th uiTh>#</th>
-                <th uiTh>{{ 'template' | translate }}</th>
-                <th uiTh>{{ 'status' | translate }}</th>
-                <th uiTh>{{ 'start' | translate }}</th>
-              </tr>
-            </thead>
-            <tbody>
-              @for (task of recent(); track task.id) {
-                <tr uiTr [routerLink]="['../tasks', task.id]" class="cursor-pointer">
-                  <td uiTd class="font-mono text-sm text-ink-muted">{{ task.id }}</td>
-                  <td uiTd class="truncate">{{ task.tpl_alias }}</td>
-                  <td uiTd><ui-badge [tone]="statusTone(task.status)">{{ statusLabel(task.status) | translate }}</ui-badge></td>
-                  <td uiTd class="font-mono text-sm text-ink-muted">{{ task.created | date: 'dd.MM HH:mm' }}</td>
-                </tr>
-              }
-            </tbody>
-          </table>
-        </div>
+        <ul class="flex flex-col divide-y divide-line">
+          @for (event of events(); track $index) {
+            <li class="flex items-start justify-between gap-4 py-2">
+              <span class="min-w-0">
+                <span class="block text-ink">{{ event.description }}</span>
+                <span class="text-sm text-ink-muted">{{ event.username }}</span>
+              </span>
+              <span class="shrink-0 font-mono text-sm text-ink-muted">
+                {{ event.created | date: 'dd.MM.yyyy HH:mm' }}
+              </span>
+            </li>
+          }
+        </ul>
       }
     </ui-card>
-  </div>
+  }
+
+  @case ('settings') {
+    <ui-card [heading]="'settings' | translate">
+      <form class="flex max-w-xl flex-col gap-4" [formGroup]="settings" (ngSubmit)="save()">
+        <div uiField>
+          <label uiLabel for="project-name">{{ 'projectName' | translate }}</label>
+          <input id="project-name" uiInput type="text" formControlName="name" />
+        </div>
+
+        <div uiField>
+          <label uiLabel for="project-parallel">{{ 'maxNumberOfParallelTasks' | translate }}</label>
+          <input id="project-parallel" uiInput type="number" min="0" formControlName="max_parallel_tasks" />
+        </div>
+
+        <ui-switch formControlName="alert" [label]="'alert' | translate"></ui-switch>
+
+        <div class="flex items-center gap-2">
+          <button uiButton variant="primary" type="submit" [disabled]="saving()">{{ 'save' | translate }}</button>
+          <a uiButton variant="ghost" [href]="'api/project/' + projectId + '/backup'" target="_blank" rel="noopener">
+            {{ 'backup' | translate }}
+          </a>
+        </div>
+      </form>
+    </ui-card>
+  }
 }
+
+<ng-template #taskRow let-task>
+  <td uiTd>
+    <a class="font-mono font-medium text-ink hover:text-signal" [routerLink]="['tasks', task.id]">#{{ task.id }}</a>
+    <span class="block truncate text-sm text-ink-muted">
+      {{ task.message || task.commit_message || task.tpl_alias }}
+    </span>
+  </td>
+  <td uiTd class="font-mono text-sm text-ink-muted">
+    {{ task.version || (task.commit_hash ? task.commit_hash.slice(0, 8) : '—') }}
+  </td>
+  <td uiTd><ui-badge [tone]="statusTone(task.status)">{{ statusLabel(task.status) | translate }}</ui-badge></td>
+  <td uiTd class="text-sm text-ink-muted">{{ task.user_name || '—' }}</td>
+  <td uiTd class="font-mono text-sm text-ink-muted">{{ task.created | date: 'dd.MM.yyyy HH:mm' }}</td>
+  <td uiTd class="text-right font-mono text-sm text-ink-muted">{{ duration(task.start, task.end) }}</td>
+</ng-template>

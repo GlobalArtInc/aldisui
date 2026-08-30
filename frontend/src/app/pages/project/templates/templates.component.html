@@ -38,10 +38,15 @@
       variant="secondary"
       size="sm"
       type="button"
-      [disabled]="running() === template.id"
-      (click)="run(template)">
+      (click)="open(template)">
       <ui-icon name="arrow-right" [size]="15"></ui-icon>
       {{ 'run' | translate }}
     </button>
   </td>
 </ng-template>
+
+<aldis-run-task-dialog
+  [projectId]="projectId"
+  [template]="selected()"
+  (started)="started($event)"
+  (closed)="selected.set(null)"></aldis-run-task-dialog>

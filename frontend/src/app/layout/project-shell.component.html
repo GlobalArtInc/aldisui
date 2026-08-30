@@ -1,19 +1,35 @@
-<ui-shell
-  [sections]="sections()"
-  [brand]="project()?.name ?? ('aldis' | translate)"
-  [section]="'project' | translate"
-  brandHref="/">
+<ui-shell [sections]="sections()" [brand]="project()?.name ?? ('aldis' | translate)" [section]="role()" brandHref="/">
+  <div shellTopbarStart class="flex items-center gap-2">
+    <ui-menu align="start" width="240px">
+      <button menuTrigger uiButton variant="ghost" size="sm" type="button" class="flex items-center gap-2">
+        <ui-avatar [name]="project()?.name ?? ''" size="sm"></ui-avatar>
+        <span class="max-w-[160px] truncate font-medium">{{ project()?.name }}</span>
+        <ui-icon name="chevron-down" [size]="14"></ui-icon>
+      </button>
+
+      <div menuContent>
+        @for (item of all(); track item.id) {
+          <button uiMenuItem type="button" (click)="goToProject(item.id)">{{ item.name }}</button>
+        }
+        <button uiMenuItem type="button" (click)="goToProjects()">{{ 'projects' | translate }}</button>
+      </div>
+    </ui-menu>
+  </div>
+
   <div shellTopbarEnd class="flex items-center gap-2">
-    <button uiButton variant="ghost" size="sm" type="button" (click)="goToProjects()">
-      <ui-icon name="arrow-left" [size]="15"></ui-icon>
-      {{ 'projects' | translate }}
-    </button>
+    <aldis-language-menu></aldis-language-menu>
 
     @if (user(); as current) {
       <span class="hidden text-sm text-ink-muted sm:inline">{{ current.name }}</span>
     }
 
-    <button uiButton variant="ghost" size="icon-sm" type="button" [attr.aria-label]="'signOut' | translate" (click)="signOut()">
+    <button
+      uiButton
+      variant="ghost"
+      size="icon-sm"
+      type="button"
+      [attr.aria-label]="'signOut' | translate"
+      (click)="signOut()">
       <ui-icon name="log-out" [size]="15"></ui-icon>
     </button>
   </div>

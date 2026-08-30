@@ -20,6 +20,7 @@ import {
   UiTrDirective,
 } from '@globalart/platform-ui';
 import { ApiService } from '../../../core/api.service';
+import { RunTaskDialogComponent } from '../run/run-task-dialog.component';
 import type { Task, Template } from '../../../core/models';
 import { statusLabel, statusTone, taskDuration } from '../../../core/task-status';
 
@@ -44,6 +45,7 @@ import { statusLabel, statusTone, taskDuration } from '../../../core/task-status
     UiTdDirective,
     UiThDirective,
     UiTrDirective,
+    RunTaskDialogComponent,
   ],
   templateUrl: './template.component.html',
 })
@@ -58,7 +60,7 @@ export class TemplateComponent {
   readonly template = signal<Template | null>(null);
   readonly tasks = signal<Task[]>([]);
   readonly loading = signal(true);
-  readonly busy = signal(false);
+  readonly selected = signal<Template | null>(null);
 
   readonly statusTone = statusTone;
   readonly statusLabel = statusLabel;
@@ -68,16 +70,13 @@ export class TemplateComponent {
     void this.load();
   }
 
-  async run(): Promise<void> {
-    this.busy.set(true);
-    try {
-      const task = await firstValueFrom(
-        this.api.post<Task>(`project/${this.projectId}/tasks`, { template_id: this.templateId }),
-      );
-      await this.router.navigate(['/project', this.projectId, 'tasks', task.id]);
-    } finally {
-      this.busy.set(false);
-    }
+  open(): void {
+    this.selected.set(this.template());
+  }
+
+  async started(task: Task): Promise<void> {
+    this.selected.set(null);
+    await this.router.navigate(['/project', this.projectId, 'tasks', task.id]);
   }
 
   private async load(): Promise<void> {

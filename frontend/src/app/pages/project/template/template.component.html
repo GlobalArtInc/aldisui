@@ -2,7 +2,7 @@
   [eyebrow]="'taskTemplates' | translate"
   [heading]="template()?.name ?? ('template' | translate)"
   [description]="template()?.description ?? undefined">
-  <button uiButton variant="primary" type="button" [disabled]="busy()" (click)="run()">
+  <button uiButton variant="primary" type="button" (click)="open()">
     <ui-icon name="arrow-right" [size]="15"></ui-icon>
     {{ 'run' | translate }}
   </button>
@@ -72,3 +72,9 @@
     </ui-card>
   </div>
 }
+
+<aldis-run-task-dialog
+  [projectId]="projectId"
+  [template]="selected()"
+  (started)="started($event)"
+  (closed)="selected.set(null)"></aldis-run-task-dialog>

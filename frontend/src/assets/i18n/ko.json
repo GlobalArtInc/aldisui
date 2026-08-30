@@ -374,5 +374,6 @@
   "backupFile": "백업 파일",
   "backupFileHint": "프로젝트에서 내보낸 JSON 파일",
   "expand": "확대",
-  "columnTask": "작업"
+  "columnTask": "작업",
+  "variables": "변수"
 }

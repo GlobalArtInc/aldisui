@@ -374,5 +374,6 @@
   "backupFile": "备份文件",
   "backupFileHint": "从项目导出的 JSON 文件",
   "expand": "展开",
-  "columnTask": "任务"
+  "columnTask": "任务",
+  "variables": "变量"
 }

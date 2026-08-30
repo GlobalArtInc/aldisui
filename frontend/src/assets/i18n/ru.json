@@ -383,5 +383,6 @@
   "backupFile": "Файл бэкапа",
   "backupFileHint": "JSON-файл, выгруженный из проекта",
   "expand": "Развернуть",
-  "columnTask": "Задача"
+  "columnTask": "Задача",
+  "variables": "Переменные"
 }

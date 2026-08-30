@@ -374,5 +374,6 @@
   "backupFile": "バックアップファイル",
   "backupFileHint": "プロジェクトから書き出した JSON ファイル",
   "expand": "拡大",
-  "columnTask": "タスク"
+  "columnTask": "タスク",
+  "variables": "変数"
 }

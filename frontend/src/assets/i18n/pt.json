@@ -374,5 +374,6 @@
   "backupFile": "Ficheiro de cópia de segurança",
   "backupFileHint": "Ficheiro JSON exportado de um projeto",
   "expand": "Expandir",
-  "columnTask": "Tarefa"
+  "columnTask": "Tarefa",
+  "variables": "Variáveis"
 }

@@ -405,5 +405,6 @@
   "backupFile": "Файл резервної копії",
   "backupFileHint": "JSON-файл, вивантажений з проєкту",
   "expand": "Розгорнути",
-  "columnTask": "Завдання"
+  "columnTask": "Завдання",
+  "variables": "Змінні"
 }

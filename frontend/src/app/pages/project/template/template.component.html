@@ -21,68 +21,76 @@
 @if (loading()) {
   <ui-spinner></ui-spinner>
 } @else {
-  <div class="grid gap-6 xl:grid-cols-[340px_1fr]">
-    <ui-card [heading]="'template' | translate">
-      <ui-description-list>
-        <ui-description-row [label]="'name' | translate">{{ template()?.name }}</ui-description-row>
-        <ui-description-row [label]="'playbook' | translate">
-          <span class="font-mono text-sm">{{ template()?.playbook }}</span>
-        </ui-description-row>
-        <ui-description-row [label]="'type' | translate">
-          <ui-badge tone="neutral">{{ template()?.app || template()?.type || 'ansible' }}</ui-badge>
-        </ui-description-row>
-        @if (template()?.git_branch) {
-          <ui-description-row [label]="'branch' | translate">{{ template()?.git_branch }}</ui-description-row>
-        }
-        @if (template()?.arguments) {
-          <ui-description-row [label]="'arguments' | translate">
-            <span class="font-mono text-sm">{{ template()?.arguments }}</span>
-          </ui-description-row>
-        }
-        <ui-description-row [label]="'history' | translate">{{ template()?.tasks ?? 0 }}</ui-description-row>
-      </ui-description-list>
-    </ui-card>
-
-    <ui-card [heading]="'history' | translate">
-      @if (tasks().length === 0) {
-        <ui-empty-state icon="activity" [heading]="'noTasks' | translate"></ui-empty-state>
-      } @else {
-        <div uiTableWrap>
-          <table uiTable>
-            <thead>
-              <tr>
-                <th uiTh>#</th>
-                <th uiTh>{{ 'status' | translate }}</th>
-                <th uiTh>{{ 'user' | translate }}</th>
-                <th uiTh>{{ 'start' | translate }}</th>
-                <th uiTh>{{ 'duration' | translate }}</th>
-              </tr>
-            </thead>
-            <tbody>
-              @for (task of tasks(); track task.id) {
-                <tr uiTr class="cursor-pointer" [routerLink]="[]" [queryParams]="{ t: task.id }">
-                  <td uiTd class="font-mono text-sm text-ink-muted">{{ task.id }}</td>
-                  <td uiTd>
-                    <ui-badge [tone]="statusTone(task.status)">{{ statusLabel(task.status) | translate }}</ui-badge>
-                  </td>
-                  <td uiTd class="text-sm text-ink-muted">{{ task.user_name || '—' }}</td>
-                  <td uiTd class="font-mono text-sm text-ink-muted">{{ task.created | date: 'dd.MM HH:mm' }}</td>
-                  <td uiTd class="font-mono text-sm text-ink-muted">{{ duration(task.start, task.end) }}</td>
-                </tr>
-              }
-            </tbody>
-          </table>
-        </div>
-      }
-    </ui-card>
+  <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+    <ui-stat [label]="'type' | translate" [value]="template()?.app || template()?.type || 'ansible'"></ui-stat>
+    <ui-stat [label]="'repository' | translate" [value]="repositoryName()" tone="neutral"></ui-stat>
+    <ui-stat [label]="'inventory' | translate" [value]="inventoryName()" tone="neutral"></ui-stat>
+    <ui-stat [label]="'history' | translate" [value]="template()?.tasks ?? 0" tone="signal"></ui-stat>
   </div>
+
+  <ui-card [heading]="'template' | translate">
+    <ui-description-list density="compact">
+      <ui-description-row [label]="'playbook' | translate">
+        <span class="font-mono text-sm break-all">{{ template()?.playbook }}</span>
+      </ui-description-row>
+
+      <ui-description-row [label]="'branch' | translate">
+        {{ template()?.git_branch || ('none' | translate) }}
+      </ui-description-row>
+
+      <ui-description-row [label]="'environment' | translate">
+        {{ groupNames() }}
+      </ui-description-row>
+
+      <ui-description-row [label]="'arguments' | translate">
+        <span class="font-mono text-sm break-all">{{ template()?.arguments || '[]' }}</span>
+      </ui-description-row>
+
+      @if ((template()?.survey_vars ?? []).length) {
+        <ui-description-row [label]="'variables' | translate">
+          <span class="flex flex-wrap gap-2">
+            @for (variable of template()?.survey_vars ?? []; track variable.name) {
+              <ui-badge tone="neutral">{{ variable.name }}</ui-badge>
+            }
+          </span>
+        </ui-description-row>
+      }
+    </ui-description-list>
+  </ui-card>
+
+  <ui-data-table
+    [columns]="columns()"
+    [rows]="tasks()"
+    [rowTemplate]="taskRow"
+    [rowAccent]="accent"
+    [rowSearch]="rowSearch"
+    density="compact"
+    [pageSize]="15"
+    emptyIcon="activity"
+    [heading]="'history' | translate"
+    [searchPlaceholder]="'search' | translate"
+    [emptyHeading]="'noTasks' | translate">
+  </ui-data-table>
 }
 
-<aldis-run-task-dialog
-  [projectId]="projectId"
-  [template]="selected()"
-  (started)="started($event)"
-  (closed)="selected.set(null)"></aldis-run-task-dialog>
+<ng-template #taskRow let-task>
+  <td uiTd>
+    <a class="font-mono font-medium text-ink hover:text-signal" [routerLink]="[]" [queryParams]="{ t: task.id }">
+      #{{ task.id }}
+    </a>
+    @if (task.message || task.commit_message) {
+      <span class="ml-2 text-sm text-ink-muted">{{ task.message || task.commit_message }}</span>
+    }
+  </td>
+  <td uiTd class="font-mono text-sm text-ink-faint">
+    {{ task.version || (task.commit_hash ? task.commit_hash.slice(0, 8) : '—') }}
+  </td>
+  <td uiTd class="whitespace-nowrap text-sm text-ink-muted">{{ task.user_name || '—' }}</td>
+  <td uiTd class="whitespace-nowrap font-mono text-sm text-ink-muted tabular">
+    {{ task.created | date: 'dd.MM HH:mm' }}
+  </td>
+  <td uiTd class="text-right font-mono text-sm text-ink-muted tabular">{{ duration(task.start, task.end) }}</td>
+</ng-template>
 
 <aldis-template-dialog
   [projectId]="projectId"
@@ -90,3 +98,9 @@
   [opened]="formOpen()"
   (saved)="savedTemplate()"
   (closed)="formOpen.set(false)"></aldis-template-dialog>
+
+<aldis-run-task-dialog
+  [projectId]="projectId"
+  [template]="selected()"
+  (started)="started($event)"
+  (closed)="selected.set(null)"></aldis-run-task-dialog>

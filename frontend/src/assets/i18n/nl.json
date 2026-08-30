@@ -374,5 +374,6 @@
   "backupFile": "Back-upbestand",
   "backupFileHint": "JSON-bestand geëxporteerd uit een project",
   "expand": "Vergroten",
-  "columnTask": "Taak"
+  "columnTask": "Taak",
+  "variables": "Variabelen"
 }

@@ -405,5 +405,6 @@
   "backupFile": "備份檔案",
   "backupFileHint": "從專案匯出的 JSON 檔案",
   "expand": "展開",
-  "columnTask": "任務"
+  "columnTask": "任務",
+  "variables": "變數"
 }

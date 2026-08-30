@@ -374,5 +374,6 @@
   "backupFile": "Plik kopii zapasowej",
   "backupFileHint": "Plik JSON wyeksportowany z projektu",
   "expand": "Powiększ",
-  "columnTask": "Zadanie"
+  "columnTask": "Zadanie",
+  "variables": "Zmienne"
 }

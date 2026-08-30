@@ -405,5 +405,6 @@
   "backupFile": "Sicherungsdatei",
   "backupFileHint": "Aus einem Projekt exportierte JSON-Datei",
   "expand": "Vergrößern",
-  "columnTask": "Aufgabe"
+  "columnTask": "Aufgabe",
+  "variables": "Variablen"
 }

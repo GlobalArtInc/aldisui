@@ -374,5 +374,6 @@
   "backupFile": "File di backup",
   "backupFileHint": "File JSON esportato da un progetto",
   "expand": "Espandi",
-  "columnTask": "Attività"
+  "columnTask": "Attività",
+  "variables": "Variabili"
 }

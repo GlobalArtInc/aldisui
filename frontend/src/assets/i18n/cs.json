@@ -484,5 +484,6 @@
   "backupFile": "Soubor zálohy",
   "backupFileHint": "Soubor JSON exportovaný z projektu",
   "expand": "Rozbalit",
-  "columnTask": "Úloha"
+  "columnTask": "Úloha",
+  "variables": "Proměnné"
 }

@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { signedInGuard } from './core/auth.guard';
+import { activeProjectGuard, signedInGuard } from './core/auth.guard';
 import { LoginComponent } from './pages/login/login.component';
 import { ShellComponent } from './layout/shell.component';
 import { ProjectShellComponent } from './layout/project-shell.component';
@@ -112,6 +112,12 @@ export const routes: Routes = [
   { path: 'login', component: LoginComponent },
   {
     path: '',
+    pathMatch: 'full',
+    canActivate: [signedInGuard, activeProjectGuard],
+    children: [],
+  },
+  {
+    path: 'projects',
     component: ShellComponent,
     canActivate: [signedInGuard],
     children: [

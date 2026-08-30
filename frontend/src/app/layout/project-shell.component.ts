@@ -95,7 +95,7 @@ export class ProjectShellComponent {
   }
 
   goToProjects(): void {
-    void this.router.navigate(['/']);
+    void this.router.navigate(['/projects']);
   }
 
   signOut(): void {

@@ -1,0 +1,15 @@
+<div class="flex flex-col gap-4 p-6">
+  <h1 class="text-xl font-semibold">{{ 'dashboard' | translate }}</h1>
+
+  @if (loaded() && projects().length === 0) {
+    <p class="text-sm opacity-70">{{ 'noViews' | translate }}</p>
+  }
+
+  <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+    @for (project of projects(); track project.id) {
+      <a [routerLink]="['/project', project.id]">
+        <ui-card [heading]="project.name" [eyebrow]="'project' | translate"></ui-card>
+      </a>
+    }
+  </div>
+</div>

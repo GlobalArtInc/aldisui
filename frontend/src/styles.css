@@ -1,0 +1,6 @@
+@import 'tailwindcss';
+
+@source '../node_modules/@globalart/platform-ui';
+@source './app';
+
+@import '@globalart/platform-ui/styles.css';

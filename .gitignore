@@ -59,4 +59,5 @@ __debug_bin*
 /*-config.yaml
 /*-config.yml
 /*-config.config
-/*.sqlite*
+/*.sqlite*/frontend/node_modules/
+/frontend/.angular/

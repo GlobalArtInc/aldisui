@@ -1,0 +1,16 @@
+<div class="flex min-h-screen flex-col">
+  <header class="flex items-center justify-between border-b px-6 py-3">
+    <a routerLink="/" class="font-semibold tracking-wide">{{ 'aldis' | translate }}</a>
+
+    <div class="flex items-center gap-3">
+      @if (user(); as current) {
+        <span class="text-sm opacity-70">{{ current.name }}</span>
+      }
+      <button uiButton variant="ghost" size="sm" (click)="signOut()">{{ 'signOut' | translate }}</button>
+    </div>
+  </header>
+
+  <main class="flex-1">
+    <router-outlet />
+  </main>
+</div>

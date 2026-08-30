@@ -1,0 +1,443 @@
+package cmd
+
+import (
+	"fmt"
+	"net/http"
+	"net/url"
+	"os"
+	"os/signal"
+	"strings"
+	"syscall"
+	"time"
+
+	"github.com/gorilla/handlers"
+	"github.com/GlobalArtInc/aldisui/api"
+	"github.com/GlobalArtInc/aldisui/api/helpers"
+	"github.com/GlobalArtInc/aldisui/api/sockets"
+	"github.com/GlobalArtInc/aldisui/db"
+	"github.com/GlobalArtInc/aldisui/db/factory"
+	"github.com/GlobalArtInc/aldisui/pkg/debuglog"
+	"github.com/GlobalArtInc/aldisui/pkg/metrics"
+	proFactory "github.com/GlobalArtInc/aldisui/pro/db/factory"
+	proHA "github.com/GlobalArtInc/aldisui/pro/services/ha"
+	proServer "github.com/GlobalArtInc/aldisui/pro/services/server"
+	proTasks "github.com/GlobalArtInc/aldisui/pro/services/tasks"
+	"github.com/GlobalArtInc/aldisui/services/schedules"
+	"github.com/GlobalArtInc/aldisui/services/server"
+	"github.com/GlobalArtInc/aldisui/services/tasks"
+	"github.com/GlobalArtInc/aldisui/util"
+	log "github.com/sirupsen/logrus"
+	"github.com/spf13/cobra"
+)
+
+var persistentFlags struct {
+	configPath  string
+	noConfig    bool
+	logLevel    string
+	debugFilter string
+}
+
+var rootCmd = &cobra.Command{
+	Use:   "aldis",
+	Short: "Aldis UI is a beautiful web UI for Ansible",
+	Long: `Aldis UI is a beautiful web UI for Ansible.
+Source code is available at https://github.com/GlobalArtInc/aldisui.
+Complete documentation is available at https://github.com/GlobalArtInc/aldisui`,
+	Run: func(cmd *cobra.Command, args []string) {
+		_ = cmd.Help()
+		os.Exit(0)
+	},
+
+	PersistentPreRun: func(cmd *cobra.Command, args []string) {
+		str := persistentFlags.logLevel
+		if str == "" {
+			str = os.Getenv("ALDIS_LOG_LEVEL")
+		}
+
+		if str != "" {
+			lvl, err := log.ParseLevel(str)
+			if err != nil {
+				log.Panic(err)
+			}
+
+			fmt.Println("Log level set to", lvl)
+			log.SetLevel(lvl)
+		}
+
+		initDebugFilter()
+	},
+}
+
+// initDebugFilter installs a Node.js-`debug`-style namespace filter for DEBUG
+// logs, driven by the --debug-filter flag or ALDIS_DEBUG_FILTER env var.
+// The filter only narrows DEBUG-level output and only takes effect when the log
+// level is already DEBUG; otherwise there are no debug entries to filter and the
+// logger is left untouched.
+func initDebugFilter() {
+	spec, filter := configuredDebugFilter()
+	if filter == nil {
+		return
+	}
+
+	log.SetFormatter(debuglog.NewFilteringFormatter(
+		log.StandardLogger().Formatter,
+		filter,
+	))
+
+	fmt.Println("Debug filter active:", spec)
+}
+
+func configuredDebugFilter() (string, *debuglog.Filter) {
+	spec := persistentFlags.debugFilter
+	if spec == "" {
+		spec = os.Getenv("ALDIS_DEBUG_FILTER")
+	}
+
+	if spec == "" || log.GetLevel() < log.DebugLevel {
+		return "", nil
+	}
+
+	return spec, debuglog.Parse(spec)
+}
+
+func Execute() {
+	rootCmd.PersistentFlags().StringVar(&persistentFlags.logLevel, "log-level", "", "Log level: DEBUG, INFO, WARN, ERROR, FATAL, PANIC")
+	rootCmd.PersistentFlags().StringVar(&persistentFlags.debugFilter, "debug-filter", "", "Debug namespace filter (only with DEBUG level), e.g. 'runner,task_*' or '*,-db'")
+	rootCmd.PersistentFlags().StringVar(&persistentFlags.configPath, "config", "", "Configuration file path")
+	rootCmd.PersistentFlags().BoolVar(&persistentFlags.noConfig, "no-config", false, "Don't use configuration file")
+	if err := rootCmd.Execute(); err != nil {
+		_, _ = fmt.Fprintln(os.Stderr, err)
+		os.Exit(1)
+	}
+}
+
+// watchEncryptionKeyReload enables key rotation without restarting the server:
+//   - a SIGHUP forces an immediate reload;
+//   - a background poller applies changes to the encryption-keys file (and the
+//     key files it references) automatically. The poller runs only when a keys
+//     file is configured and the poll interval is positive.
+func watchEncryptionKeyReload() {
+	sigCh := make(chan os.Signal, 1)
+	signal.Notify(sigCh, syscall.SIGHUP)
+	go func() {
+		for range sigCh {
+			if err := util.ReloadEncryptionKeys(); err != nil {
+				log.WithError(err).Error("failed to reload encryption keys")
+			} else {
+				log.Info("encryption keys reloaded (SIGHUP)")
+			}
+		}
+	}()
+
+	interval := util.Config.EncryptionKeysPollInterval()
+	if util.Config.EncryptionKeysFile() == "" || interval <= 0 {
+		return
+	}
+
+	go func() {
+		ticker := time.NewTicker(interval)
+		defer ticker.Stop()
+		for range ticker.C {
+			changed, err := util.ReloadEncryptionKeysIfChanged()
+			if err != nil {
+				log.WithError(err).Error("failed to reload encryption keys")
+			} else if changed {
+				log.Info("encryption keys reloaded (file changed)")
+			}
+		}
+	}()
+}
+
+func runService() {
+	store := createStore("root")
+
+	watchEncryptionKeyReload()
+
+	jwtSigner, jwtErr := util.InitJWTSignerFromStore(store)
+	if jwtErr != nil {
+		log.WithError(jwtErr).Warning("failed to initialise JWT signer")
+	}
+
+	initSyslog(util.Config.Syslog)
+
+	// Initialize HA node identity before any component that uses it.
+	util.InitHANodeID()
+
+	state := proTasks.NewTaskStateStore()
+	terraformStore := proFactory.NewTerraformStore(store)
+	ansibleTaskRepo := proFactory.NewAnsibleTaskRepository(store)
+	workflowStore := proFactory.NewWorkflowStore(store)
+
+	projectService := server.NewProjectService(store, store)
+	encryptionService := server.NewAccessKeyEncryptionService(store, store, store, store)
+	accessKeyInstallationService := server.NewAccessKeyInstallationService(encryptionService)
+	integrationService := server.NewIntegrationService(store, encryptionService)
+	inventoryService := server.NewInventoryService(
+		store,
+		store,
+		store,
+		encryptionService,
+	)
+	accessKeyService := server.NewAccessKeyService(store, encryptionService, store)
+	secretStorageService := server.NewSecretStorageService(store, store, accessKeyService, encryptionService)
+	secretStorageSyncScheduler := server.NewSecretStorageSyncScheduler(store, secretStorageService)
+	environmentService := server.NewEnvironmentService(store, encryptionService, store)
+	runnerService := server.NewRunnerService(store)
+	subscriptionService := proServer.NewSubscriptionService(store, store, store, terraformStore)
+	logWriteService := proServer.NewLogWriteService()
+	appMetrics := metrics.NewMetrics()
+
+	taskPool := tasks.CreateTaskPool(
+		store,
+		state,
+		ansibleTaskRepo,
+		inventoryService,
+		encryptionService,
+		accessKeyInstallationService,
+		logWriteService,
+		jwtSigner,
+		appMetrics,
+	)
+
+	// The workflow service orchestrates workflow runs and launches each node's
+	// task through the pool; the pool calls back into it when a workflow task
+	// finishes. Wire the cycle: pool first, then service (with the pool as its
+	// enqueuer), then inject the service back into the pool. The run locker is
+	// Redis-backed in HA mode (cluster-wide progression locks) and nil
+	// otherwise, which makes the service fall back to its in-process locker.
+	workflowService := proServer.NewWorkflowService(workflowStore, store, &taskPool, proHA.NewWorkflowRunLocker())
+	taskPool.SetWorkflowService(workflowService)
+
+	schedulePool := schedules.CreateSchedulePool(
+		store,
+		&taskPool,
+		accessKeyInstallationService,
+		encryptionService,
+	)
+
+	defer schedulePool.Destroy()
+	defer taskPool.Stop()
+
+	// --- Active-Active HA Setup ---
+	// When HA is enabled, multiple Aldis nodes share the same Redis-backed
+	// task state and coordinate via Pub/Sub. The following components ensure:
+	// 1. Node registry: heartbeat-based cluster membership
+	// 2. Schedule deduplication: only one node fires each schedule occurrence
+	// 3. WebSocket broadcaster: real-time events reach clients on all nodes
+	// 4. Orphan cleaner: tasks from dead nodes are marked as failed
+	if nodeRegistry := proHA.NewNodeRegistry(); nodeRegistry != nil {
+		if err := nodeRegistry.Start(); err != nil {
+			log.WithError(err).Fatal("failed to start HA node registry")
+		}
+		defer nodeRegistry.Stop()
+		log.WithField("node_id", nodeRegistry.NodeID()).Info("HA active-active mode enabled")
+	}
+
+	// Cluster inspector powers the admin Cluster Dashboard. It is nil when HA
+	// is disabled; the dashboard then falls back to the local task pool. The
+	// instance is injected per-request below.
+	clusterInspector := proHA.NewClusterInspector()
+
+	if dedup := proHA.NewScheduleDeduplicator(); dedup != nil {
+		schedulePool.SetDeduplicator(dedup)
+		secretStorageSyncScheduler.SetTickDeduplicator(dedup)
+	}
+
+	// Each process holds its own in-memory cron table. Schedule CRUD handlers only
+	// call Refresh on the node that served the HTTP request, so other HA nodes
+	// would keep stale jobs until restart. Reload from the shared DB on an interval.
+	if util.HAEnabled() {
+		const haSchedulePoolSyncInterval = 60 * time.Second
+		go func() {
+			ticker := time.NewTicker(haSchedulePoolSyncInterval)
+			defer ticker.Stop()
+			for range ticker.C {
+				schedulePool.Refresh()
+			}
+		}()
+	}
+
+	if orphanCleaner := proHA.NewOrphanCleaner(store); orphanCleaner != nil {
+		orphanCleaner.Start()
+		defer orphanCleaner.Stop()
+	}
+
+	// The workflow reconciler periodically progresses non-terminal runs so
+	// approval timeouts fire and statuses converge without a browser poll or a
+	// task completion. Cluster-safe: each pass takes the per-run lock. Nil in
+	// the open-source build (workflows are Pro-gated).
+	if workflowReconciler := proServer.NewWorkflowReconciler(workflowStore, workflowService); workflowReconciler != nil {
+		workflowReconciler.Start()
+		defer workflowReconciler.Stop()
+	}
+
+	util.Config.PrintDbInfo()
+
+	port := util.Config.Port
+
+	if !strings.HasPrefix(port, ":") {
+		port = ":" + port
+	}
+
+	fmt.Printf("Tmp Path (projects home) %v\n", util.Config.TmpPath)
+	fmt.Printf("Aldis %v\n", util.Version())
+	fmt.Printf("Interface %v\n", util.Config.Interface)
+	fmt.Printf("Port %v\n", util.Config.Port)
+
+	subscriptionService.StartValidationCron()
+
+	// Start the WebSocket hub before the broadcaster so that h.broadcast
+	// channel is being consumed when LocalBroadcast is called.
+	go sockets.StartWS()
+
+	if wsBroadcaster := proHA.NewWSBroadcaster(); wsBroadcaster != nil {
+		sockets.SetBroadcaster(wsBroadcaster)
+		wsBroadcaster.Start()
+		defer wsBroadcaster.Stop()
+	}
+
+	go schedulePool.Run()
+	go taskPool.Run()
+
+	secretStorageSyncScheduler.Start()
+	defer secretStorageSyncScheduler.Stop()
+
+	route := api.Route(
+		store,
+		terraformStore,
+		workflowStore,
+		ansibleTaskRepo,
+		&taskPool,
+		projectService,
+		integrationService,
+		encryptionService,
+		accessKeyInstallationService,
+		secretStorageService,
+		accessKeyService,
+		environmentService,
+		subscriptionService,
+		jwtSigner,
+		runnerService,
+		workflowService,
+		appMetrics,
+	)
+
+	route.Use(func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			r = helpers.SetContextValue(r, "store", store)
+			r = helpers.SetContextValue(r, "schedule_pool", schedulePool)
+			r = helpers.SetContextValue(r, "task_pool", &taskPool)
+			r = helpers.SetContextValue(r, "log_writer", logWriteService)
+			r = helpers.SetContextValue(r, "cluster_inspector", clusterInspector)
+
+			next.ServeHTTP(w, r)
+		})
+	})
+
+	var router http.Handler = route
+
+	router = handlers.ProxyHeaders(router)
+	http.Handle("/", router)
+
+	fmt.Println("Server is running")
+
+	defer store.Close()
+
+	var err error
+	if util.Config.TLS.Enabled {
+
+		if util.Config.TLS.HTTPRedirectPort != nil && util.Config.TLS.HTTPRedirectAddr != "" {
+			panic("You can't use both HTTP redirect address and port at the same time")
+		}
+
+		var httpRedirectAddr string
+
+		if util.Config.TLS.HTTPRedirectPort != nil {
+			httpRedirectAddr = fmt.Sprintf(":%d", *util.Config.TLS.HTTPRedirectPort)
+		} else if util.Config.TLS.HTTPRedirectAddr != "" {
+			httpRedirectAddr = util.Config.TLS.HTTPRedirectAddr
+		}
+
+		if httpRedirectAddr != "" {
+
+			go func() {
+
+				err = http.ListenAndServe(httpRedirectAddr, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+					target := "https://"
+
+					if util.Config.WebHost != "" {
+						webHost, err2 := url.Parse(util.Config.WebHost)
+						if err2 != nil {
+							log.Panic(err2)
+						}
+						target += webHost.Host + r.URL.Path
+					} else {
+						hostParts := strings.Split(r.Host, ":")
+						host := hostParts[0]
+						target += host + port + r.URL.Path
+					}
+
+					if len(r.URL.RawQuery) > 0 {
+						target += "?" + r.URL.RawQuery
+					}
+
+					if r.Method != "GET" && r.Method != "HEAD" && r.Method != "OPTIONS" {
+						http.Error(w, "http requests forbidden", http.StatusForbidden)
+						return
+					}
+
+					http.Redirect(w, r, target, http.StatusTemporaryRedirect)
+				}))
+				if err != nil {
+					log.Panic(err)
+				}
+			}()
+		}
+
+		err = http.ListenAndServeTLS(util.Config.Interface+port, util.Config.TLS.CertFile, util.Config.TLS.KeyFile, cropTrailingSlashMiddleware(router))
+
+		if err != nil {
+			log.Panic(err)
+		}
+
+	} else {
+		err = http.ListenAndServe(util.Config.Interface+port, cropTrailingSlashMiddleware(router))
+	}
+
+	if err != nil {
+		log.WithError(err).Panic("Error starting server")
+	}
+}
+
+func createStoreWithMigrationVersion(token string, undoTo *string, applyTo *string) db.Store {
+	util.ConfigInit(persistentFlags.configPath, persistentFlags.noConfig)
+
+	store := factory.CreateStore()
+
+	store.Connect()
+
+	var err error
+	if undoTo != nil {
+		err = db.Rollback(store, *undoTo)
+	} else {
+		err = db.Migrate(store, applyTo)
+	}
+
+	if err != nil {
+		panic(err)
+	}
+
+	err = db.FillConfigFromDB(store)
+
+	if err != nil {
+		panic(err)
+	}
+
+	util.LookupDefaultApps()
+
+	return store
+}
+
+func createStore(token string) db.Store {
+	return createStoreWithMigrationVersion(token, nil, nil)
+}

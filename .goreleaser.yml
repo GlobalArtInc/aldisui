@@ -1,0 +1,111 @@
+version: 2
+dist: bin
+
+before:
+  hooks:
+    - task build:fe
+
+builds:
+  - binary: aldis
+    env:
+      - CGO_ENABLED=0
+    main: ./cli/main.go
+    ldflags: -s -w -X github.com/GlobalArtInc/aldisui/util.Ver={{ .Version }} -X github.com/GlobalArtInc/aldisui/util.Commit={{ .ShortCommit }} -X github.com/GlobalArtInc/aldisui/util.Date={{ .Timestamp }}
+    tags:
+      - netgo
+    goos:
+      - windows
+      - darwin
+      - linux
+      - freebsd
+    goarch:
+      - 386
+      - amd64
+      - arm
+      - arm64
+      - ppc64le
+    ignore:
+      - goos: freebsd
+        goarch: arm
+      - goos: freebsd
+        goarch: 386
+      - goos: freebsd
+        goarch: ppc64le
+      - goos: darwin
+        goarch: 386
+      - goos: darwin
+        goarch: arm
+      - goos: darwin
+        goarch: ppc64le
+      - goos: windows
+        goarch: ppc64le
+      - goos: windows
+        goarch: arm
+
+archives:
+  - files:
+      - LICENSE
+    name_template: "{{ .Env.PROJECT_NAME }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+    format_overrides:
+      - goos: windows
+        format: zip
+
+signs:
+  -
+    artifacts: checksum
+    signature: "{{ .Env.PROJECT_NAME }}_{{ .Version }}_checksums.txt.sig"
+    cmd: gpg
+    stdin: '{{ .Env.GPG_PASS_3 }}'
+    args:
+      - "--batch"
+      - "--pinentry-mode"
+      - "loopback"
+      - "--passphrase-fd"
+      - "0"
+      - "-u"
+      - "{{ .Env.GPG_KEY_ID_3 }}"
+      - "--yes"
+      - "--output"
+      - "${signature}"
+      - "--detach-sign"
+      - "${artifact}"
+
+checksum:
+  name_template: "{{ .Env.PROJECT_NAME }}_{{ .Version }}_checksums.txt"
+
+snapshot:
+  name_template: "{{ .Timestamp }}-{{ .ShortCommit }}-SNAPSHOT"
+
+nfpms:
+  - id: aldis
+    file_name_template: "{{ .Env.PROJECT_NAME }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+    package_name: "aldis"
+    description: Modern UI and powerful API for Ansible, Terraform, OpenTofu, PowerShell and other DevOps tools.
+    homepage: https://github.com/GlobalArtInc/aldisui
+    vendor: GlobalArt
+    maintainer: GlobalArt <https://github.com/GlobalArtInc/aldisui>
+    license: MIT
+
+    formats:
+      - deb
+      - rpm
+
+    dependencies:
+      - git
+
+    suggests:
+      - ansible
+
+    bindir: /usr/bin
+
+    # Embedded RPM signature (rpm -K). Skipped when GPG_KEY_PATH is not set
+    # (e.g. local `task release:test`). Passphrase comes from the
+    # NFPM_ALDIS_PASSPHRASE environment variable.
+    rpm:
+      signature:
+        key_file: '{{ envOrDefault "GPG_KEY_PATH" "" }}'
+
+release:
+  draft: true
+  use_existing_draft: true
+  name_template: "{{.Tag}}"

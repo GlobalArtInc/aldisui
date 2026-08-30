@@ -1,0 +1,20 @@
+version: "3.4"
+
+volumes:
+  server:
+
+services:
+  server:
+    image: docker.io/globalartinc/aldis:${ALDIS_VERSION:-latest}
+    restart: always
+    environment:
+      ALDIS_ADMIN_NAME: ${ALDIS_ADMIN_NAME:-Admin}
+      ALDIS_ADMIN: ${ALDIS_ADMIN_USERNAME:-admin}
+      ALDIS_ADMIN_PASSWORD: ${ALDIS_ADMIN_PASSWORD:-p455w0rd}
+      ALDIS_ADMIN_EMAIL: ${ALDIS_ADMIN_EMAIL:-admin@localhost}
+      ALDIS_WEB_ROOT: ${ALDIS_WEB_ROOT:-http://0.0.0.0:3000}
+      ALDIS_ACCESS_KEY_ENCRYPTION: ${ALDIS_ACCESS_KEY_ENCRYPTION:-IlRqgrrO5Gp27MlWakDX1xVrPv4jhoUx+ARY+qGyDxQ=}
+    volumes:
+      - server:/var/lib/aldis
+    ports:
+      - "3000:3000"

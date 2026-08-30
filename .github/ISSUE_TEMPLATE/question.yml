@@ -1,0 +1,45 @@
+---
+
+name: Question
+description: You have a question on how to use Aldis
+title: "Question: "
+labels: ['question', 'triage']
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please make sure to go through these steps **before opening an issue**:
+        
+        - [ ] Read the [documentation](https://github.com/GlobalArtInc/aldisui)
+          - [ ] Read the [troubleshooting guide](https://github.com/GlobalArtInc/aldisui)
+          - [ ] Read the [documentation regarding manual installations](https://github.com/GlobalArtInc/aldisui) if you did install Aldis that way
+
+        - [ ] Check if there are existing [issues](https://github.com/GlobalArtInc/aldisui/issues) or [discussions](https://github.com/GlobalArtInc/aldisui/discussions) regarding your topic
+
+  - type: textarea
+    id: question
+    attributes:
+      label: Question
+    validations:
+      required: true
+
+  - type: dropdown
+    id: related-to
+    attributes:
+      label: Related to
+      description: |
+        To what parts of Aldis is the question related? (if any)
+
+      multiple: true
+      options:
+        - Web-Frontend (what users interact with)
+        - Web-Backend (APIs)
+        - Service (scheduled tasks, alerts)
+        - Ansible (task execution)
+        - Configuration
+        - Database
+        - Documentation
+        - Docker
+    validations:
+      required: false

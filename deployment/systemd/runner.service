@@ -1,0 +1,15 @@
+[Unit]
+Description=Aldis Runner
+Requires=network.target
+
+[Service]
+EnvironmentFile=/etc/aldis/env
+ExecStart=/usr/bin/aldis runner start --config ${ALDIS_CONFIG}
+ExecReload=/bin/kill -HUP $MAINPID
+User=aldis
+Group=aldis
+Restart=always
+RestartSec=3s
+
+[Install]
+WantedBy=multi-user.target

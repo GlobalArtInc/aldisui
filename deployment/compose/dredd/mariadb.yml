@@ -1,0 +1,10 @@
+version: "3.4"
+
+services:
+  dredd:
+    environment:
+      ALDIS_DB_DIALECT: mysql
+      ALDIS_DB_CONFIG: '{"host": "db:3306","user": "aldis","pass": "aldis","name": "aldis"}'
+    depends_on:
+      - server
+      - db

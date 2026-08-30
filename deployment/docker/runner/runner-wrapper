@@ -1,0 +1,28 @@
+#!/bin/sh
+set -e
+echoerr() { printf "%s\n" "$*" >&2; }
+
+export ALDIS_CONFIG_PATH="${ALDIS_CONFIG_PATH:-/etc/aldis}"
+export ALDIS_TMP_PATH="${ALDIS_TMP_PATH:-/tmp/aldis}"
+export ALDIS_DATA_PATH="${ALDIS_DATA_PATH:-/var/lib/aldis}"
+
+if test -f "${ALDIS_CONFIG_PATH}/requirements.txt"; then
+    echoerr "Installing additional python dependencies"
+    pip3 install --upgrade -r "${ALDIS_CONFIG_PATH}/requirements.txt"
+else
+    echoerr "No additional python dependencies to install"
+fi
+
+echoerr "Starting aldis runner"
+
+RUNNER_CMD="/usr/local/bin/aldis runner start --no-config"
+
+if [ -n "${ALDIS_RUNNER_REGISTRATION_TOKEN:-}" ] || [ -n "${ALDIS_RUNNER_REGISTRATION_TOKEN_FILE:-}" ]; then
+  if [ -z "${ALDIS_RUNNER_TOKEN:-}" ] && [ -z "${ALDIS_RUNNER_TOKEN_FILE:-}" ]; then
+    export ALDIS_RUNNER_TOKEN_FILE="${ALDIS_DATA_PATH}/runner_token.txt"
+  fi
+  echoerr "Registration token provided, starting runner in registration mode"
+  exec ${RUNNER_CMD} --register
+else
+  exec ${RUNNER_CMD}
+fi

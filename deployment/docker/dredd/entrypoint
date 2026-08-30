@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+set -eo pipefail
+
+echo "---> Gen aldis config"
+cat << EOF > /aldis/.dredd/config.json
+{
+  "dialect": "${ALDIS_DB_DIALECT}",
+  "${ALDIS_DB_DIALECT}": ${ALDIS_DB_CONFIG},
+  "access_key_encryption": "${ALDIS_ACCESS_KEY_ENCRYPTION}"
+}
+EOF
+
+echo "---> Waiting for aldis"
+while ! nc -z server 3000; do
+  sleep 1
+done
+
+echo "---> Start dredd server"
+sleep 5
+dredd $@

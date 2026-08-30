@@ -1,0 +1,9 @@
+version: "3.4"
+
+services:
+  dredd:
+    environment:
+      ALDIS_DB_DIALECT: sqlite
+      ALDIS_DB_CONFIG: '{"host": "/data/database.sqlite3"}'
+    depends_on:
+      - server

@@ -1,0 +1,10 @@
+version: "3.4"
+
+services:
+  dredd:
+    environment:
+      ALDIS_DB_DIALECT: postgres
+      ALDIS_DB_CONFIG: '{"host": "db:5432","user": "aldis","pass": "aldis","name": "aldis","options": {"sslmode": "disable"}}'
+    depends_on:
+      - server
+      - db

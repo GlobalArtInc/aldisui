@@ -1,0 +1,14 @@
+version: "3.4"
+
+services:
+  runner:
+    image: docker.io/globalartinc/aldis-runner:${ALDIS_VERSION:-latest}
+    restart: always
+    environment:
+      ALDIS_WEB_ROOT: ${ALDIS_WEB_ROOT:-http://server:3000}
+      ALDIS_RUNNER_API_URL: ${ALDIS_RUNNER_API_URL:-http://server:3000/internal}
+      ALDIS_RUNNER_REGISTRATION_TOKEN: ${ALDIS_RUNNER_REGISTRATION_TOKEN:-H1wDyorbg6gTSwJlVwle2Fne}
+
+  server:
+    environment:
+      ALDIS_RUNNER_REGISTRATION_TOKEN: ${ALDIS_RUNNER_REGISTRATION_TOKEN:-H1wDyorbg6gTSwJlVwle2Fne}

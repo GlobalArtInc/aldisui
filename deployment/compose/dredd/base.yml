@@ -1,0 +1,25 @@
+version: "3.4"
+
+volumes:
+  dredd:
+
+services:
+  server:
+    environment:
+      ALDIS_ADMIN_PASSWORD: password
+      ALDIS_ADMIN_NAME: Developer
+      ALDIS_ADMIN_EMAIL: admin@localhost
+      ALDIS_ADMIN: admin
+      ALDIS_WEB_ROOT: http://0.0.0.0:3000
+
+  dredd:
+    build:
+      context: ../../../
+      dockerfile: deployment/docker/dredd/Dockerfile
+    command:
+      - --config
+      - .dredd/dredd.docker.yml
+    environment:
+      ALDIS_ACCESS_KEY_ENCRYPTION: ${ALDIS_ACCESS_KEY_ENCRYPTION:-IlRqgrrO5Gp27MlWakDX1xVrPv4jhoUx+ARY+qGyDxQ=}
+    volumes:
+      - dredd:/data

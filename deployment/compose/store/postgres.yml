@@ -1,0 +1,26 @@
+version: "3.4"
+
+volumes:
+  postgres:
+
+services:
+  server:
+    environment:
+      ALDIS_DB_DIALECT: postgres
+      ALDIS_DB_HOST: db
+      ALDIS_DB_PORT: 5432
+      ALDIS_DB_USER: ${POSTGRES_USERNAME:-aldis}
+      ALDIS_DB_PASS: ${POSTGRES_PASSWORD:-aldis}
+      ALDIS_DB: ${POSTGRES_DATABASE:-aldis}
+    depends_on:
+      - db
+
+  db:
+    image: postgres:14.3
+    restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USERNAME:-aldis}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-aldis}
+      POSTGRES_DB: ${POSTGRES_DATABASE:-aldis}
+    volumes:
+      - postgres:/var/lib/postgresql

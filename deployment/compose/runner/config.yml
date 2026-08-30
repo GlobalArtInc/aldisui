@@ -1,0 +1,6 @@
+version: "3.4"
+
+services:
+  runner:
+    volumes:
+      - ${ALDIS_RUNNER_LOCAL_CONFIG:-runner.json}:/etc/aldis/config.json:Z

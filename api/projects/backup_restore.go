@@ -1,0 +1,93 @@
+package projects
+
+import (
+	"io"
+	"net/http"
+	"strings"
+
+	"github.com/GlobalArtInc/aldisui/util"
+
+	"github.com/GlobalArtInc/aldisui/api/helpers"
+	"github.com/GlobalArtInc/aldisui/db"
+	projectService "github.com/GlobalArtInc/aldisui/services/project"
+	log "github.com/sirupsen/logrus"
+)
+
+// BackupController serves project backup/restore. Workflows live outside
+// db.Store (Pro feature, see db.WorkflowManager), so the workflow store is
+// injected and threaded into the backup/restore routines.
+type BackupController struct {
+	workflowStore db.WorkflowManager
+}
+
+func NewBackupController(workflowStore db.WorkflowManager) *BackupController {
+	return &BackupController{workflowStore: workflowStore}
+}
+
+func (c *BackupController) GetBackup(w http.ResponseWriter, r *http.Request) {
+	project := helpers.GetFromContext(r, "project").(db.Project)
+
+	store := helpers.Store(r)
+
+	backup, err := projectService.GetBackup(project.ID, store, c.workflowStore)
+
+	if err != nil {
+		helpers.WriteError(w, err)
+		return
+	}
+
+	str, err := backup.Marshal()
+	if err != nil {
+		helpers.WriteError(w, err)
+		return
+	}
+
+	w.Header().Set("content-type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	_, _ = w.Write([]byte(str))
+}
+
+func (c *BackupController) Restore(w http.ResponseWriter, r *http.Request) {
+	user := helpers.GetFromContext(r, "user").(*db.User)
+
+	if !user.Admin && !util.Config.NonAdminCanCreateProject {
+		log.Warn(user.Username + " is not permitted to restore the project")
+		w.WriteHeader(http.StatusUnauthorized)
+		return
+	}
+
+	var backup projectService.BackupFormat
+
+	buf := new(strings.Builder)
+	if _, err := io.Copy(buf, r.Body); err != nil {
+		log.Error(err)
+		helpers.WriteError(w, err)
+		return
+	}
+
+	str := buf.String()
+
+	if err := backup.Unmarshal(str); err != nil {
+		log.Error(err)
+		helpers.WriteError(w, err)
+		return
+	}
+
+	store := helpers.Store(r)
+	if err := backup.Verify(); err != nil {
+		log.Error(err)
+		helpers.WriteError(w, err)
+		return
+	}
+
+	var p *db.Project
+	p, err := backup.Restore(*user, store, c.workflowStore)
+
+	if err != nil {
+		log.Error(err)
+		helpers.WriteError(w, err)
+		return
+	}
+
+	helpers.WriteJSON(w, http.StatusOK, p)
+}

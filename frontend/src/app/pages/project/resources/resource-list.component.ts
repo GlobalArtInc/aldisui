@@ -1,4 +1,4 @@
-import { Component, EventEmitter, inject, signal } from '@angular/core';
+import { Component, EventEmitter, computed, inject, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { catchError, firstValueFrom, of } from 'rxjs';
@@ -53,14 +53,20 @@ export class ResourceListComponent {
   readonly options = signal<Record<string, ResourceOption[]>>({});
   readonly reload = new EventEmitter<unknown>();
 
-  readonly columns: UiColumn[] = [
-    ...this.config.columns.map((column) => ({
-      title: column.title,
-      align: column.align,
-      width: column.width,
-    })),
-    ...(this.config.fields ? [{ title: '', align: 'right' as const, width: '110px' }] : []),
-  ];
+  private readonly labels = signal(0);
+
+  readonly columns = computed<UiColumn[]>(() => {
+    this.labels();
+
+    return [
+      ...this.config.columns.map((column) => ({
+        title: column.title ? (this.translate.instant(column.title) as string) : '',
+        align: column.align,
+        width: column.width,
+      })),
+      ...(this.config.fields ? [{ title: '', align: 'right' as const, width: '110px' }] : []),
+    ];
+  });
 
   readonly rowSearch = (row: Row, search: string): boolean =>
     this.config.columns
@@ -70,6 +76,10 @@ export class ResourceListComponent {
       .includes(search.toLowerCase());
 
   constructor() {
+    const bump = () => this.labels.update((value) => value + 1);
+    this.translate.onLangChange.subscribe(bump);
+    this.translate.onTranslationChange.subscribe(bump);
+
     void this.load();
     void this.loadOptions();
   }

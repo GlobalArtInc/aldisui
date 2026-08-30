@@ -15,9 +15,9 @@ const RESOURCES: Record<string, ResourceConfig> = {
     deleteKey: 'deleteInventory',
     askKey: 'askDeleteInv',
     columns: [
-      { title: 'ID', field: 'id', kind: 'mono', width: '80px' },
-      { title: 'Name', field: 'name' },
-      { title: 'Type', field: 'type', kind: 'badge' },
+      { title: 'id', field: 'id', kind: 'mono', width: '80px' },
+      { title: 'name', field: 'name' },
+      { title: 'type', field: 'type', kind: 'badge' },
     ],
     fields: [
       { name: 'name', label: 'name', required: true },
@@ -48,8 +48,8 @@ const RESOURCES: Record<string, ResourceConfig> = {
     deleteKey: 'deleteEnvironment',
     askKey: 'askDeleteEnv',
     columns: [
-      { title: 'ID', field: 'id', kind: 'mono', width: '80px' },
-      { title: 'Name', field: 'name' },
+      { title: 'id', field: 'id', kind: 'mono', width: '80px' },
+      { title: 'name', field: 'name' },
     ],
     fields: [
       { name: 'name', label: 'environmentName', required: true },
@@ -66,9 +66,9 @@ const RESOURCES: Record<string, ResourceConfig> = {
     deleteKey: 'deleteKey',
     askKey: 'askDeleteKey',
     columns: [
-      { title: 'ID', field: 'id', kind: 'mono', width: '80px' },
-      { title: 'Name', field: 'name' },
-      { title: 'Type', field: 'type', kind: 'badge' },
+      { title: 'id', field: 'id', kind: 'mono', width: '80px' },
+      { title: 'name', field: 'name' },
+      { title: 'type', field: 'type', kind: 'badge' },
     ],
     fields: [
       { name: 'name', label: 'name', required: true },
@@ -100,10 +100,10 @@ const RESOURCES: Record<string, ResourceConfig> = {
     deleteKey: 'deleteRepository',
     askKey: 'askDeleteRepo',
     columns: [
-      { title: 'ID', field: 'id', kind: 'mono', width: '80px' },
-      { title: 'Name', field: 'name' },
-      { title: 'Git URL', field: 'git_url', kind: 'mono' },
-      { title: 'Branch', field: 'git_branch', kind: 'badge' },
+      { title: 'id', field: 'id', kind: 'mono', width: '80px' },
+      { title: 'name', field: 'name' },
+      { title: 'gitUrl', field: 'git_url', kind: 'mono' },
+      { title: 'branch', field: 'git_branch', kind: 'badge' },
     ],
     fields: [
       { name: 'name', label: 'name', required: true },
@@ -121,11 +121,11 @@ const RESOURCES: Record<string, ResourceConfig> = {
     deleteKey: 'deleteSchedule',
     askKey: 'askDeleteSchedule',
     columns: [
-      { title: 'ID', field: 'id', kind: 'mono', width: '80px' },
-      { title: 'Name', field: 'name' },
-      { title: 'Template', field: 'tpl_name' },
-      { title: 'Cron', field: 'cron_format', kind: 'mono' },
-      { title: 'Active', field: 'active', kind: 'bool' },
+      { title: 'id', field: 'id', kind: 'mono', width: '80px' },
+      { title: 'name', field: 'name' },
+      { title: 'template', field: 'tpl_name' },
+      { title: 'cron', field: 'cron_format', kind: 'mono' },
+      { title: 'active', field: 'active', kind: 'bool' },
     ],
     fields: [
       { name: 'name', label: 'name' },
@@ -140,9 +140,9 @@ const RESOURCES: Record<string, ResourceConfig> = {
     icon: 'radio',
     emptyKey: 'none',
     columns: [
-      { title: 'ID', field: 'id', kind: 'mono', width: '80px' },
-      { title: 'Name', field: 'name' },
-      { title: 'Auth', field: 'auth_method', kind: 'badge' },
+      { title: 'id', field: 'id', kind: 'mono', width: '80px' },
+      { title: 'name', field: 'name' },
+      { title: 'type', field: 'auth_method', kind: 'badge' },
     ],
   },
   team: {
@@ -154,10 +154,10 @@ const RESOURCES: Record<string, ResourceConfig> = {
     deleteKey: 'deleteTeamMember',
     askKey: 'askDeleteTMem',
     columns: [
-      { title: 'ID', field: 'id', kind: 'mono', width: '80px' },
-      { title: 'Name', field: 'name' },
-      { title: 'Username', field: 'username', kind: 'mono' },
-      { title: 'Role', field: 'role', kind: 'badge' },
+      { title: 'id', field: 'id', kind: 'mono', width: '80px' },
+      { title: 'name', field: 'name' },
+      { title: 'username', field: 'username', kind: 'mono' },
+      { title: 'role', field: 'role', kind: 'badge' },
     ],
     fields: [
       { name: 'user_id', label: 'user', type: 'select', source: 'users', required: true },
@@ -182,11 +182,11 @@ const RESOURCES: Record<string, ResourceConfig> = {
     icon: 'shield',
     emptyKey: 'none',
     columns: [
-      { title: 'ID', field: 'id', kind: 'mono', width: '80px' },
-      { title: 'Name', field: 'name' },
-      { title: 'Tags', field: 'tags' },
-      { title: 'Status', field: 'status', kind: 'badge' },
-      { title: 'Active', field: 'active', kind: 'bool' },
+      { title: 'id', field: 'id', kind: 'mono', width: '80px' },
+      { title: 'name', field: 'name' },
+      { title: 'tags', field: 'tags' },
+      { title: 'status', field: 'status', kind: 'badge' },
+      { title: 'active', field: 'active', kind: 'bool' },
     ],
   },
 };

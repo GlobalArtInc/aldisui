@@ -390,5 +390,13 @@
   "details": "詳細資料",
   "message": "訊息",
   "copy": "複製",
-  "or": "或"
+  "or": "或",
+  "delete": "刪除",
+  "active": "啟用",
+  "passphrase": "金鑰密語",
+  "becomeKey": "提權金鑰",
+  "inventoryContent": "清單",
+  "askDelete": "確定要刪除嗎？",
+  "theme": "主題",
+  "id": "ID"
 }

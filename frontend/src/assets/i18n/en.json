@@ -567,5 +567,7 @@
   "details": "Details",
   "message": "Message",
   "copy": "Copy",
-  "or": "or"
+  "or": "or",
+  "theme": "Theme",
+  "id": "ID"
 }

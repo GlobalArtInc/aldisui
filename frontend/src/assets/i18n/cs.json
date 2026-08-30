@@ -469,5 +469,13 @@
   "details": "Detaily",
   "message": "Zpráva",
   "copy": "Kopírovat",
-  "or": "nebo"
+  "or": "nebo",
+  "delete": "Smazat",
+  "active": "Aktivní",
+  "passphrase": "Přístupová fráze",
+  "becomeKey": "Klíč pro become",
+  "inventoryContent": "Inventář",
+  "askDelete": "Opravdu smazat?",
+  "theme": "Motiv",
+  "id": "ID"
 }

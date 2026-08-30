@@ -359,5 +359,13 @@
   "details": "详情",
   "message": "消息",
   "copy": "复制",
-  "or": "或"
+  "or": "或",
+  "delete": "删除",
+  "active": "启用",
+  "passphrase": "密钥口令",
+  "becomeKey": "提权密钥",
+  "inventoryContent": "清单",
+  "askDelete": "确定要删除吗？",
+  "theme": "主题",
+  "id": "ID"
 }

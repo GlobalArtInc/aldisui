@@ -359,5 +359,13 @@
   "details": "Detalhes",
   "message": "Mensagem",
   "copy": "Copiar",
-  "or": "ou"
+  "or": "ou",
+  "delete": "Excluir",
+  "active": "Ativo",
+  "passphrase": "Frase secreta",
+  "becomeKey": "Chave become",
+  "inventoryContent": "Inventário",
+  "askDelete": "Deseja mesmo excluir?",
+  "theme": "Tema",
+  "id": "ID"
 }

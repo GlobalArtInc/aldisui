@@ -4,11 +4,12 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { UiButtonDirective } from '@globalart/platform-ui';
 import { AuthService } from '../core/auth.service';
 import { LanguageMenuComponent } from './language-menu.component';
+import { ThemeToggleComponent } from './theme-toggle.component';
 
 @Component({
   selector: 'aldis-shell',
   standalone: true,
-  imports: [RouterLink, RouterOutlet, TranslatePipe, UiButtonDirective, LanguageMenuComponent],
+  imports: [RouterLink, RouterOutlet, TranslatePipe, UiButtonDirective, LanguageMenuComponent, ThemeToggleComponent],
   templateUrl: './shell.component.html',
 })
 export class ShellComponent {

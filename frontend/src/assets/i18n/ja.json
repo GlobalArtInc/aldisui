@@ -359,5 +359,13 @@
   "details": "詳細",
   "message": "メッセージ",
   "copy": "コピー",
-  "or": "または"
+  "or": "または",
+  "delete": "削除",
+  "active": "有効",
+  "passphrase": "パスフレーズ",
+  "becomeKey": "Become キー",
+  "inventoryContent": "インベントリ",
+  "askDelete": "本当に削除しますか？",
+  "theme": "テーマ",
+  "id": "ID"
 }

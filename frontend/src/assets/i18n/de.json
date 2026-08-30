@@ -390,5 +390,13 @@
   "details": "Details",
   "message": "Nachricht",
   "copy": "Kopieren",
-  "or": "oder"
+  "or": "oder",
+  "delete": "Löschen",
+  "active": "Aktiv",
+  "passphrase": "Passphrase",
+  "becomeKey": "Become-Schlüssel",
+  "inventoryContent": "Inventar",
+  "askDelete": "Wirklich löschen?",
+  "theme": "Design",
+  "id": "ID"
 }

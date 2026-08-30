@@ -3,6 +3,7 @@
     <a routerLink="/" class="text-lg font-semibold tracking-wide text-ink">{{ 'aldis' | translate }}</a>
 
     <div class="flex items-center gap-3">
+      <aldis-theme-toggle></aldis-theme-toggle>
       <aldis-language-menu></aldis-language-menu>
 
       @if (user(); as current) {

@@ -359,5 +359,13 @@
   "details": "세부 정보",
   "message": "메시지",
   "copy": "복사",
-  "or": "또는"
+  "or": "또는",
+  "delete": "삭제",
+  "active": "활성",
+  "passphrase": "암호문",
+  "becomeKey": "Become 키",
+  "inventoryContent": "인벤토리",
+  "askDelete": "정말 삭제할까요?",
+  "theme": "테마",
+  "id": "ID"
 }

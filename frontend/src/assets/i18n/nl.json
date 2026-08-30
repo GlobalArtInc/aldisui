@@ -359,5 +359,13 @@
   "details": "Details",
   "message": "Bericht",
   "copy": "Kopiëren",
-  "or": "of"
+  "or": "of",
+  "delete": "Verwijderen",
+  "active": "Actief",
+  "passphrase": "Wachtwoordzin",
+  "becomeKey": "Become-sleutel",
+  "inventoryContent": "Inventaris",
+  "askDelete": "Weet je zeker dat je dit wilt verwijderen?",
+  "theme": "Thema",
+  "id": "ID"
 }

@@ -359,5 +359,13 @@
   "details": "Szczegóły",
   "message": "Wiadomość",
   "copy": "Kopiuj",
-  "or": "lub"
+  "or": "lub",
+  "delete": "Usuń",
+  "active": "Aktywne",
+  "passphrase": "Hasło klucza",
+  "becomeKey": "Klucz become",
+  "inventoryContent": "Inwentarz",
+  "askDelete": "Czy na pewno usunąć?",
+  "theme": "Motyw",
+  "id": "ID"
 }

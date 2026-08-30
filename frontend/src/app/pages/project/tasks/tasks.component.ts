@@ -26,6 +26,7 @@ import { statusLabel, statusTone, taskDuration } from '../../../core/task-status
     UiPageHeaderComponent,
     UiTdDirective,
   ],
+  host: { class: 'flex flex-col gap-6' },
   templateUrl: './tasks.component.html',
 })
 export class TasksComponent {

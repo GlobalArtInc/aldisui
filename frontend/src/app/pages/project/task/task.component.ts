@@ -40,6 +40,7 @@ interface LogLine {
     UiPageHeaderComponent,
     UiSpinnerComponent,
   ],
+  host: { class: 'flex flex-col gap-6' },
   templateUrl: './task.component.html',
 })
 export class TaskComponent {

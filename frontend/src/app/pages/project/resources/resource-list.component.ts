@@ -26,6 +26,7 @@ type Row = Record<string, unknown>;
     UiPageHeaderComponent,
     UiTdDirective,
   ],
+  host: { class: 'flex flex-col gap-6' },
   templateUrl: './resource-list.component.html',
 })
 export class ResourceListComponent {

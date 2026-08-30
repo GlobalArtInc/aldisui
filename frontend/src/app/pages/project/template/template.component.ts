@@ -47,6 +47,7 @@ import { statusLabel, statusTone, taskDuration } from '../../../core/task-status
     UiTrDirective,
     RunTaskDialogComponent,
   ],
+  host: { class: 'flex flex-col gap-6' },
   templateUrl: './template.component.html',
 })
 export class TemplateComponent {

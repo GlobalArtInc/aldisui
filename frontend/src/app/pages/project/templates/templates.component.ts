@@ -30,6 +30,7 @@ import { statusLabel, statusTone } from '../../../core/task-status';
     UiTdDirective,
     RunTaskDialogComponent,
   ],
+  host: { class: 'flex flex-col gap-6' },
   templateUrl: './templates.component.html',
 })
 export class TemplatesComponent {

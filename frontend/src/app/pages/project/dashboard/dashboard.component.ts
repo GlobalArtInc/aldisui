@@ -56,6 +56,7 @@ interface ProjectEvent {
     UiTabsComponent,
     UiTdDirective,
   ],
+  host: { class: 'flex flex-col gap-6' },
   templateUrl: './dashboard.component.html',
 })
 export class DashboardComponent {

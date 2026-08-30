@@ -13,7 +13,7 @@ import { LANGUAGES, storeLanguage } from '../core/languages';
   standalone: true,
   imports: [UiButtonDirective, UiIconComponent, UiMenuComponent, UiMenuItemDirective],
   template: `
-    <ui-menu align="end" width="200px">
+    <ui-menu align="end" width="w-52">
       <button menuTrigger uiButton variant="ghost" size="sm" type="button" class="flex items-center gap-2">
         <ui-icon name="languages" [size]="15"></ui-icon>
         <span class="hidden sm:inline">{{ label() }}</span>

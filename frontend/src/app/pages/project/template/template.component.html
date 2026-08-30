@@ -21,56 +21,71 @@
 @if (loading()) {
   <ui-spinner></ui-spinner>
 } @else {
-  <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-    <ui-stat [label]="'type' | translate" [value]="template()?.app || template()?.type || 'ansible'"></ui-stat>
-    <ui-stat [label]="'repository' | translate" [value]="repositoryName()" tone="neutral"></ui-stat>
-    <ui-stat [label]="'inventory' | translate" [value]="inventoryName()" tone="neutral"></ui-stat>
-    <ui-stat [label]="'history' | translate" [value]="template()?.tasks ?? 0" tone="signal"></ui-stat>
-  </div>
+  <ui-page-columns>
+    <ui-card [heading]="'template' | translate">
+      <ui-description-list density="compact">
+        <ui-description-row [label]="'playbook' | translate">
+          <span class="font-mono text-sm break-all">{{ template()?.playbook }}</span>
+        </ui-description-row>
 
-  <ui-card [heading]="'template' | translate">
-    <ui-description-list density="compact">
-      <ui-description-row [label]="'playbook' | translate">
-        <span class="font-mono text-sm break-all">{{ template()?.playbook }}</span>
-      </ui-description-row>
+        <ui-description-row [label]="'branch' | translate">
+          {{ template()?.git_branch || ('none' | translate) }}
+        </ui-description-row>
 
-      <ui-description-row [label]="'branch' | translate">
-        {{ template()?.git_branch || ('none' | translate) }}
-      </ui-description-row>
+        <ui-description-row [label]="'environment' | translate">
+          {{ groupNames() }}
+        </ui-description-row>
 
-      <ui-description-row [label]="'environment' | translate">
-        {{ groupNames() }}
-      </ui-description-row>
+        <ui-description-row [label]="'arguments' | translate">
+          <span class="font-mono text-sm break-all">{{ template()?.arguments || '[]' }}</span>
+        </ui-description-row>
+      </ui-description-list>
+    </ui-card>
 
-      <ui-description-row [label]="'arguments' | translate">
-        <span class="font-mono text-sm break-all">{{ template()?.arguments || '[]' }}</span>
-      </ui-description-row>
+    <ui-data-table
+      [columns]="columns()"
+      [rows]="tasks()"
+      [rowTemplate]="taskRow"
+      [rowAccent]="accent"
+      [rowSearch]="rowSearch"
+      density="compact"
+      [pageSize]="15"
+      emptyIcon="activity"
+      [heading]="'history' | translate"
+      [searchPlaceholder]="'search' | translate"
+      [emptyHeading]="'noTasks' | translate">
+    </ui-data-table>
+
+    <ui-page-aside>
+      <ui-stat [label]="'history' | translate" [value]="template()?.tasks ?? 0" tone="signal"></ui-stat>
+
+      <ui-card [heading]="'details' | translate">
+        <ui-description-list density="compact">
+          <ui-description-row [label]="'type' | translate">
+            {{ template()?.app || template()?.type || 'ansible' }}
+          </ui-description-row>
+
+          <ui-description-row [label]="'repository' | translate">
+            {{ repositoryName() }}
+          </ui-description-row>
+
+          <ui-description-row [label]="'inventory' | translate">
+            {{ inventoryName() }}
+          </ui-description-row>
+        </ui-description-list>
+      </ui-card>
 
       @if ((template()?.survey_vars ?? []).length) {
-        <ui-description-row [label]="'variables' | translate">
-          <span class="flex flex-wrap gap-2">
+        <ui-card [heading]="'variables' | translate">
+          <div class="flex flex-wrap gap-2">
             @for (variable of template()?.survey_vars ?? []; track variable.name) {
               <ui-badge tone="neutral">{{ variable.name }}</ui-badge>
             }
-          </span>
-        </ui-description-row>
+          </div>
+        </ui-card>
       }
-    </ui-description-list>
-  </ui-card>
-
-  <ui-data-table
-    [columns]="columns()"
-    [rows]="tasks()"
-    [rowTemplate]="taskRow"
-    [rowAccent]="accent"
-    [rowSearch]="rowSearch"
-    density="compact"
-    [pageSize]="15"
-    emptyIcon="activity"
-    [heading]="'history' | translate"
-    [searchPlaceholder]="'search' | translate"
-    [emptyHeading]="'noTasks' | translate">
-  </ui-data-table>
+    </ui-page-aside>
+  </ui-page-columns>
 }
 
 <ng-template #taskRow let-task>

@@ -6,10 +6,12 @@
 </ui-page-header>
 
 <ui-data-table
-  [columns]="columns"
+  [columns]="columns()"
   [rows]="templates()"
   [rowTemplate]="templateRow"
   [rowSearch]="rowSearch"
+  [rowAccent]="accent"
+  density="compact"
   [pageSize]="20"
   emptyIcon="file-text"
   [searchPlaceholder]="'search' | translate"

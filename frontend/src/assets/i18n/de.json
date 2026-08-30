@@ -404,5 +404,6 @@
   "askDeleteIntegration": "Diese Integration wirklich löschen?",
   "backupFile": "Sicherungsdatei",
   "backupFileHint": "Aus einem Projekt exportierte JSON-Datei",
-  "expand": "Vergrößern"
+  "expand": "Vergrößern",
+  "columnTask": "Aufgabe"
 }

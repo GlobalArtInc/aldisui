@@ -373,5 +373,6 @@
   "askDeleteIntegration": "Voulez-vous vraiment supprimer cette intégration ?",
   "backupFile": "Fichier de sauvegarde",
   "backupFileHint": "Fichier JSON exporté depuis un projet",
-  "expand": "Agrandir"
+  "expand": "Agrandir",
+  "columnTask": "Tâche"
 }

@@ -373,5 +373,6 @@
   "askDeleteIntegration": "この連携を削除しますか？",
   "backupFile": "バックアップファイル",
   "backupFileHint": "プロジェクトから書き出した JSON ファイル",
-  "expand": "拡大"
+  "expand": "拡大",
+  "columnTask": "タスク"
 }

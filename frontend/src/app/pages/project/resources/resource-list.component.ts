@@ -16,6 +16,7 @@ import {
 import { ApiService } from '../../../core/api.service';
 import { ResourceFormComponent } from './resource-form.component';
 import type { ResourceConfig, ResourceOption, ResourceOptionSource } from './resource.model';
+import type { UiTableAccent } from '@globalart/platform-ui';
 
 type Row = Record<string, unknown>;
 
@@ -67,6 +68,16 @@ export class ResourceListComponent {
       ...(this.config.fields ? [{ title: '', align: 'right' as const, width: '110px' }] : []),
     ];
   });
+
+  readonly accent = (row: Row): UiTableAccent => {
+    const accent = this.config.accent;
+
+    if (!accent) {
+      return 'none';
+    }
+
+    return accent.map[String(row[accent.field])] ?? accent.fallback ?? 'none';
+  };
 
   readonly rowSearch = (row: Row, search: string): boolean =>
     this.config.columns

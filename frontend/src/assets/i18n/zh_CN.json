@@ -373,5 +373,6 @@
   "askDeleteIntegration": "确定要删除此集成吗？",
   "backupFile": "备份文件",
   "backupFileHint": "从项目导出的 JSON 文件",
-  "expand": "展开"
+  "expand": "展开",
+  "columnTask": "任务"
 }

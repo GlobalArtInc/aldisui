@@ -373,5 +373,6 @@
   "askDeleteIntegration": "Czy na pewno usunąć tę integrację?",
   "backupFile": "Plik kopii zapasowej",
   "backupFileHint": "Plik JSON wyeksportowany z projektu",
-  "expand": "Powiększ"
+  "expand": "Powiększ",
+  "columnTask": "Zadanie"
 }

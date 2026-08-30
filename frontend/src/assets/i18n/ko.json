@@ -373,5 +373,6 @@
   "askDeleteIntegration": "이 통합을 삭제할까요?",
   "backupFile": "백업 파일",
   "backupFileHint": "프로젝트에서 내보낸 JSON 파일",
-  "expand": "확대"
+  "expand": "확대",
+  "columnTask": "작업"
 }

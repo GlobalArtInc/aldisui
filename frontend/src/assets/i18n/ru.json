@@ -382,5 +382,6 @@
   "askDeleteIntegration": "Действительно удалить эту интеграцию?",
   "backupFile": "Файл бэкапа",
   "backupFileHint": "JSON-файл, выгруженный из проекта",
-  "expand": "Развернуть"
+  "expand": "Развернуть",
+  "columnTask": "Задача"
 }

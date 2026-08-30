@@ -16,8 +16,8 @@ const RESOURCES: Record<string, ResourceConfig> = {
     askKey: 'askDeleteInv',
     columns: [
       { title: 'id', field: 'id', kind: 'mono', width: '80px' },
-      { title: 'name', field: 'name' },
-      { title: 'type', field: 'type', kind: 'badge' },
+      { title: 'name', field: 'name', width: '30%' },
+      { title: 'type', field: 'type', kind: 'badge', width: '160px' },
     ],
     fields: [
       { name: 'name', label: 'name', required: true },
@@ -49,7 +49,7 @@ const RESOURCES: Record<string, ResourceConfig> = {
     askKey: 'askDeleteEnv',
     columns: [
       { title: 'id', field: 'id', kind: 'mono', width: '80px' },
-      { title: 'name', field: 'name' },
+      { title: 'name', field: 'name', width: '30%' },
     ],
     fields: [
       { name: 'name', label: 'environmentName', required: true },
@@ -67,8 +67,8 @@ const RESOURCES: Record<string, ResourceConfig> = {
     askKey: 'askDeleteKey',
     columns: [
       { title: 'id', field: 'id', kind: 'mono', width: '80px' },
-      { title: 'name', field: 'name' },
-      { title: 'type', field: 'type', kind: 'badge' },
+      { title: 'name', field: 'name', width: '30%' },
+      { title: 'type', field: 'type', kind: 'badge', width: '160px' },
     ],
     fields: [
       { name: 'name', label: 'name', required: true },
@@ -101,9 +101,9 @@ const RESOURCES: Record<string, ResourceConfig> = {
     askKey: 'askDeleteRepo',
     columns: [
       { title: 'id', field: 'id', kind: 'mono', width: '80px' },
-      { title: 'name', field: 'name' },
-      { title: 'gitUrl', field: 'git_url', kind: 'mono' },
-      { title: 'branch', field: 'git_branch', kind: 'badge' },
+      { title: 'name', field: 'name', width: '30%' },
+      { title: 'gitUrl', field: 'git_url', kind: 'mono', width: '38%' },
+      { title: 'branch', field: 'git_branch', kind: 'badge', width: '160px' },
     ],
     fields: [
       { name: 'name', label: 'name', required: true },
@@ -122,11 +122,12 @@ const RESOURCES: Record<string, ResourceConfig> = {
     askKey: 'askDeleteSchedule',
     columns: [
       { title: 'id', field: 'id', kind: 'mono', width: '80px' },
-      { title: 'name', field: 'name' },
-      { title: 'template', field: 'tpl_name' },
-      { title: 'cron', field: 'cron_format', kind: 'mono' },
-      { title: 'active', field: 'active', kind: 'bool' },
+      { title: 'name', field: 'name', width: '30%' },
+      { title: 'template', field: 'tpl_name', width: '28%' },
+      { title: 'cron', field: 'cron_format', kind: 'mono', width: '180px' },
+      { title: 'active', field: 'active', kind: 'bool', width: '120px' },
     ],
+    accent: { field: 'active', map: { true: 'ok' }, fallback: 'none' },
     fields: [
       { name: 'name', label: 'name' },
       { name: 'template_id', label: 'template', type: 'select', source: 'templates', required: true },
@@ -144,8 +145,8 @@ const RESOURCES: Record<string, ResourceConfig> = {
     askKey: 'askDeleteIntegration',
     columns: [
       { title: 'id', field: 'id', kind: 'mono', width: '80px' },
-      { title: 'name', field: 'name' },
-      { title: 'type', field: 'auth_method', kind: 'badge' },
+      { title: 'name', field: 'name', width: '30%' },
+      { title: 'type', field: 'auth_method', kind: 'badge', width: '180px' },
     ],
     fields: [
       { name: 'name', label: 'name', required: true },
@@ -178,9 +179,9 @@ const RESOURCES: Record<string, ResourceConfig> = {
     askKey: 'askDeleteTMem',
     columns: [
       { title: 'id', field: 'id', kind: 'mono', width: '80px' },
-      { title: 'name', field: 'name' },
-      { title: 'username', field: 'username', kind: 'mono' },
-      { title: 'role', field: 'role', kind: 'badge' },
+      { title: 'name', field: 'name', width: '30%' },
+      { title: 'username', field: 'username', kind: 'mono', width: '220px' },
+      { title: 'role', field: 'role', kind: 'badge', width: '160px' },
     ],
     fields: [
       { name: 'user_id', label: 'user', type: 'select', source: 'users', required: true },
@@ -206,11 +207,12 @@ const RESOURCES: Record<string, ResourceConfig> = {
     emptyKey: 'none',
     columns: [
       { title: 'id', field: 'id', kind: 'mono', width: '80px' },
-      { title: 'name', field: 'name' },
-      { title: 'tags', field: 'tags' },
-      { title: 'status', field: 'status', kind: 'badge' },
-      { title: 'active', field: 'active', kind: 'bool' },
+      { title: 'name', field: 'name', width: '30%' },
+      { title: 'tags', field: 'tags', width: '220px' },
+      { title: 'status', field: 'status', kind: 'badge', width: '160px' },
+      { title: 'active', field: 'active', kind: 'bool', width: '120px' },
     ],
+    accent: { field: 'status', map: { online: 'ok', offline: 'danger' }, fallback: 'none' },
   },
 };
 

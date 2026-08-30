@@ -1,6 +1,6 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { firstValueFrom } from 'rxjs';
 import {
   UiBadgeComponent,
@@ -16,7 +16,7 @@ import { ApiService } from '../../../core/api.service';
 import { RunTaskDialogComponent } from '../run/run-task-dialog.component';
 import { TemplateDialogComponent } from './template-dialog.component';
 import type { Task, Template } from '../../../core/models';
-import { statusLabel, statusTone } from '../../../core/task-status';
+import { statusAccent, statusLabel, statusTone } from '../../../core/task-status';
 
 @Component({
   selector: 'aldis-templates',
@@ -41,6 +41,7 @@ export class TemplatesComponent {
   private readonly api = inject(ApiService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
+  private readonly translate = inject(TranslateService);
 
   readonly projectId = Number(this.route.parent?.snapshot.paramMap.get('id'));
   readonly templates = signal<Template[] | null>(null);
@@ -49,14 +50,22 @@ export class TemplatesComponent {
   readonly formOpen = signal(false);
   readonly removing = signal<Template | null>(null);
 
-  readonly columns: UiColumn[] = [
-    { title: 'ID', width: '80px' },
-    { title: 'Name', sortable: true, sortKey: 'name' },
-    { title: 'Playbook' },
-    { title: 'Type' },
-    { title: 'Last task' },
-    { title: '', align: 'right', width: '200px' },
-  ];
+  private readonly labels = signal(0);
+
+  readonly columns = computed<UiColumn[]>(() => {
+    this.labels();
+
+    return [
+      { title: this.t('id'), width: '70px' },
+      { title: this.t('name'), sortable: true, sortKey: 'name', width: '32%' },
+      { title: this.t('playbook'), width: '28%' },
+      { title: this.t('type'), width: '130px' },
+      { title: this.t('lastTask'), width: '150px' },
+      { title: '', align: 'right', width: '190px' },
+    ];
+  });
+
+  readonly accent = (row: Template) => (row.last_task ? statusAccent(row.last_task.status) : 'none');
 
   readonly statusTone = statusTone;
   readonly statusLabel = statusLabel;
@@ -65,7 +74,15 @@ export class TemplatesComponent {
     `${row.name} ${row.playbook}`.toLowerCase().includes(search.toLowerCase());
 
   constructor() {
+    const bump = () => this.labels.update((value) => value + 1);
+    this.translate.onLangChange.subscribe(bump);
+    this.translate.onTranslationChange.subscribe(bump);
+
     void this.load();
+  }
+
+  private t(key: string): string {
+    return this.translate.instant(key) as string;
   }
 
   create(): void {

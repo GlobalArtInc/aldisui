@@ -1,4 +1,4 @@
-import type { UiIconName } from '@globalart/platform-ui';
+import type { UiIconName, UiTableAccent } from '@globalart/platform-ui';
 
 export type ResourceCellKind = 'text' | 'mono' | 'badge' | 'bool';
 
@@ -30,6 +30,12 @@ export interface ResourceColumn {
   width?: string;
 }
 
+export interface ResourceAccent {
+  field: string;
+  map: Record<string, UiTableAccent>;
+  fallback?: UiTableAccent;
+}
+
 export interface ResourceConfig {
   titleKey: string;
   path: string;
@@ -40,4 +46,5 @@ export interface ResourceConfig {
   deleteKey?: string;
   askKey?: string;
   fields?: ResourceField[];
+  accent?: ResourceAccent;
 }

@@ -24,7 +24,7 @@ import {
 import { ApiService } from '../../../core/api.service';
 import type { Project, Task, TaskStat } from '../../../core/models';
 import { ProjectService } from '../../../core/project.service';
-import { statusLabel, statusTone, taskDuration } from '../../../core/task-status';
+import { statusAccent, statusLabel, statusTone, taskDuration } from '../../../core/task-status';
 
 interface ProjectEvent {
   description: string;
@@ -91,14 +91,19 @@ export class DashboardComponent {
     }));
   });
 
-  readonly columns: UiColumn[] = [
-    { title: 'Task', width: '100px' },
-    { title: 'Version' },
-    { title: 'Status' },
-    { title: 'User' },
-    { title: 'Start' },
-    { title: 'Duration', align: 'right' },
-  ];
+  readonly columns = computed<UiColumn[]>(() => {
+    this.labels();
+
+    return [
+      { title: this.translate.instant('columnTask') as string, width: '46%' },
+      { title: this.translate.instant('version') as string, width: '120px' },
+      { title: this.translate.instant('user') as string, width: '180px' },
+      { title: this.translate.instant('start') as string, width: '150px' },
+      { title: this.translate.instant('duration') as string, width: '100px', align: 'right' },
+    ];
+  });
+
+  readonly accent = (row: Task) => statusAccent(row.status);
 
   readonly countByStatus = computed(() => {
     const totals: Record<string, number> = {};

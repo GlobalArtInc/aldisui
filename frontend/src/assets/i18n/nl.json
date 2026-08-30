@@ -373,5 +373,6 @@
   "askDeleteIntegration": "Weet je zeker dat je deze integratie wilt verwijderen?",
   "backupFile": "Back-upbestand",
   "backupFileHint": "JSON-bestand geëxporteerd uit een project",
-  "expand": "Vergroten"
+  "expand": "Vergroten",
+  "columnTask": "Taak"
 }

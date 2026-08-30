@@ -1,27 +1,37 @@
 <ui-page-header [eyebrow]="'project' | translate" [heading]="'history' | translate"></ui-page-header>
 
 <ui-data-table
-  [columns]="columns"
+  [columns]="columns()"
   [rows]="tasks()"
   [rowTemplate]="taskRow"
   [rowSearch]="rowSearch"
+  [rowAccent]="accent"
+  density="compact"
   [pageSize]="25"
   emptyIcon="activity"
   [searchPlaceholder]="'search' | translate"
   [emptyHeading]="'noTasks' | translate">
+  <span tableToolbarStart class="font-mono text-sm text-ink-faint tabular">
+    {{ (tasks() ?? []).length }}
+  </span>
 </ui-data-table>
 
 <ng-template #taskRow let-task>
-  <td uiTd class="font-mono text-sm text-ink-muted">
-    <a class="hover:text-signal" [routerLink]="[]" [queryParams]="{ t: task.id }">{{ task.id }}</a>
-  </td>
   <td uiTd>
-    <a class="font-medium text-ink hover:text-signal" [routerLink]="[]" [queryParams]="{ t: task.id }">
-      {{ task.tpl_alias }}
+    <a class="font-mono font-medium text-ink hover:text-signal" [routerLink]="[]" [queryParams]="{ t: task.id }">
+      #{{ task.id }}
     </a>
+    <span class="ml-2 text-ink">{{ task.tpl_alias }}</span>
+    @if (task.message || task.commit_message) {
+      <span class="block truncate text-sm text-ink-muted">{{ task.message || task.commit_message }}</span>
+    }
   </td>
-  <td uiTd><ui-badge [tone]="statusTone(task.status)">{{ statusLabel(task.status) | translate }}</ui-badge></td>
-  <td uiTd class="text-sm text-ink-muted">{{ task.user_name || '—' }}</td>
-  <td uiTd class="font-mono text-sm text-ink-muted">{{ task.created | date: 'dd.MM.yyyy HH:mm' }}</td>
-  <td uiTd class="text-right font-mono text-sm text-ink-muted">{{ duration(task.start, task.end) }}</td>
+  <td uiTd class="font-mono text-sm text-ink-faint">
+    {{ task.version || (task.commit_hash ? task.commit_hash.slice(0, 8) : '—') }}
+  </td>
+  <td uiTd class="whitespace-nowrap text-sm text-ink-muted">{{ task.user_name || '—' }}</td>
+  <td uiTd class="whitespace-nowrap font-mono text-sm text-ink-muted tabular">
+    {{ task.created | date: 'dd.MM HH:mm' }}
+  </td>
+  <td uiTd class="text-right font-mono text-sm text-ink-muted tabular">{{ duration(task.start, task.end) }}</td>
 </ng-template>

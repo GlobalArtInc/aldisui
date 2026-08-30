@@ -1,4 +1,4 @@
-import type { UiBadgeTone } from '@globalart/platform-ui';
+import type { UiBadgeTone, UiTableAccent } from '@globalart/platform-ui';
 import type { TaskStatus } from './models';
 
 const TONES: Record<TaskStatus, UiBadgeTone> = {
@@ -59,4 +59,14 @@ export function taskDuration(start?: string, end?: string): string {
     return `${minutes}m ${rest}s`;
   }
   return `${rest}s`;
+}
+
+export function statusAccent(status: TaskStatus): UiTableAccent {
+  const tone = statusTone(status);
+
+  if (tone === 'ok' || tone === 'warn' || tone === 'danger' || tone === 'signal') {
+    return tone;
+  }
+
+  return 'none';
 }

@@ -51,7 +51,7 @@ func NewAccessKeyEncryptionService(
 
 func keyCarriesSecret(keyType db.AccessKeyType) bool {
 	switch keyType {
-	case db.AccessKeyString, db.AccessKeySSH, db.AccessKeyLoginPassword:
+	case db.AccessKeySSH, db.AccessKeyLoginPassword:
 		return true
 	default:
 		return false

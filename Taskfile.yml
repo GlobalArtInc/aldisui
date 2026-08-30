@@ -1,9 +1,9 @@
 version: "3"
 
 vars:
-  DOCKER_ORG: aldisui
+  DOCKER_ORG: globalartinc
   DOCKER_SERVER: aldis
-  DOCKER_RUNNER: runner
+  DOCKER_RUNNER: aldis-runner
   DOCKER_CMD: docker
 
 tasks:

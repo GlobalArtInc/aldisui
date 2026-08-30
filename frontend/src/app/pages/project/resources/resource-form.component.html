@@ -1,4 +1,4 @@
-<ui-modal [open]="open()" [config]="modal()" [loading]="busy()" (action)="action($event)" (closed)="closed.emit()">
+<ui-drawer [open]="open()" [config]="drawer()" [loading]="busy()" (action)="action($event)" (closed)="closed.emit()">
   <div class="flex flex-col gap-4">
     @if (failed()) {
       <ui-alert tone="danger" [heading]="'error' | translate">{{ 'unknownError' | translate }}</ui-alert>
@@ -65,4 +65,4 @@
       </div>
     }
   </div>
-</ui-modal>
+</ui-drawer>

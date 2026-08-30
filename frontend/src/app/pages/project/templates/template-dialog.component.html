@@ -1,4 +1,4 @@
-<ui-modal [open]="open()" [config]="config()" [loading]="busy()" (action)="action($event)" (closed)="closed.emit()">
+<ui-drawer [open]="open()" [config]="config()" [loading]="busy()" (action)="action($event)" (closed)="closed.emit()">
   <div class="flex flex-col gap-4">
     @if (failed()) {
       <ui-alert tone="danger" [heading]="'error' | translate">{{ 'unknownError' | translate }}</ui-alert>
@@ -98,4 +98,4 @@
       (checkedChange)="overrideArgs.set($event)"
       [label]="'allowCliArgsInTask' | translate"></ui-switch>
   </div>
-</ui-modal>
+</ui-drawer>

@@ -8,10 +8,10 @@ import {
   UiHintDirective,
   UiInputDirective,
   UiLabelDirective,
-  UiModalComponent,
+  UiDrawerComponent,
   UiSelectComponent,
   UiSwitchComponent,
-  type UiModalConfig,
+  type UiDrawerConfig,
 } from '@globalart/platform-ui';
 import { ApiService } from '../../../core/api.service';
 import type { Template } from '../../../core/models';
@@ -34,7 +34,7 @@ const APPS = ['ansible', 'terraform', 'tofu', 'terragrunt', 'bash', 'powershell'
     UiHintDirective,
     UiInputDirective,
     UiLabelDirective,
-    UiModalComponent,
+    UiDrawerComponent,
     UiSelectComponent,
     UiSwitchComponent,
   ],
@@ -94,7 +94,7 @@ export class TemplateDialogComponent implements OnInit {
     value: app,
   }));
 
-  readonly config = computed<UiModalConfig>(() => ({
+  readonly config = computed<UiDrawerConfig>(() => ({
     title: this.current() ? this.t('editTemplate') : this.t('newTemplate'),
     size: 'lg',
     confirmButton: { label: this.t('save'), variant: 'primary', loading: this.busy() },

@@ -7,10 +7,10 @@ import {
   UiFieldDirective,
   UiInputDirective,
   UiLabelDirective,
-  UiModalComponent,
+  UiDrawerComponent,
   UiSelectComponent,
   UiSwitchComponent,
-  type UiModalConfig,
+  type UiDrawerConfig,
 } from '@globalart/platform-ui';
 import { ApiService } from '../../../core/api.service';
 import type { ResourceConfig, ResourceField, ResourceOption } from './resource.model';
@@ -27,7 +27,7 @@ type Row = Record<string, unknown>;
     UiFieldDirective,
     UiInputDirective,
     UiLabelDirective,
-    UiModalComponent,
+    UiDrawerComponent,
     UiSelectComponent,
     UiSwitchComponent,
   ],
@@ -60,8 +60,9 @@ export class ResourceFormComponent {
     (this.config?.fields ?? []).filter((field) => this.visible(field)),
   );
 
-  readonly modal = computed<UiModalConfig>(() => ({
+  readonly drawer = computed<UiDrawerConfig>(() => ({
     title: this.title(),
+    description: this.config?.titleKey ? this.t(this.config.titleKey) : undefined,
     size: 'md',
     confirmButton: { label: this.t('save'), variant: 'primary', loading: this.busy() },
     closeButton: { label: this.t('cancel') },

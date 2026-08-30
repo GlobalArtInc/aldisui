@@ -32,7 +32,13 @@
           </button>
         }
 
-        <button uiButton variant="ghost" size="icon-sm" type="button" (click)="toggleSize()">
+        <button
+          uiButton
+          variant="ghost"
+          size="icon-sm"
+          type="button"
+          [attr.aria-label]="'expand' | translate"
+          (click)="toggleSize()">
           <ui-icon name="arrow-up-right" [size]="15"></ui-icon>
         </button>
       </span>

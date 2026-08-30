@@ -482,5 +482,6 @@
   "deleteIntegration": "Smazat integraci",
   "askDeleteIntegration": "Opravdu chcete smazat tuto integraci?",
   "backupFile": "Soubor zálohy",
-  "backupFileHint": "Soubor JSON exportovaný z projektu"
+  "backupFileHint": "Soubor JSON exportovaný z projektu",
+  "expand": "Rozbalit"
 }

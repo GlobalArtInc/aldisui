@@ -372,5 +372,6 @@
   "deleteIntegration": "Elimina integrazione",
   "askDeleteIntegration": "Vuoi davvero eliminare questa integrazione?",
   "backupFile": "File di backup",
-  "backupFileHint": "File JSON esportato da un progetto"
+  "backupFileHint": "File JSON esportato da un progetto",
+  "expand": "Espandi"
 }

@@ -372,5 +372,6 @@
   "deleteIntegration": "連携を削除",
   "askDeleteIntegration": "この連携を削除しますか？",
   "backupFile": "バックアップファイル",
-  "backupFileHint": "プロジェクトから書き出した JSON ファイル"
+  "backupFileHint": "プロジェクトから書き出した JSON ファイル",
+  "expand": "拡大"
 }

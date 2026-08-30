@@ -403,5 +403,6 @@
   "deleteIntegration": "Видалити інтеграцію",
   "askDeleteIntegration": "Дійсно видалити цю інтеграцію?",
   "backupFile": "Файл резервної копії",
-  "backupFileHint": "JSON-файл, вивантажений з проєкту"
+  "backupFileHint": "JSON-файл, вивантажений з проєкту",
+  "expand": "Розгорнути"
 }

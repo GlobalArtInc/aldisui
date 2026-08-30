@@ -403,5 +403,6 @@
   "deleteIntegration": "刪除整合",
   "askDeleteIntegration": "確定要刪除此整合嗎？",
   "backupFile": "備份檔案",
-  "backupFileHint": "從專案匯出的 JSON 檔案"
+  "backupFileHint": "從專案匯出的 JSON 檔案",
+  "expand": "展開"
 }

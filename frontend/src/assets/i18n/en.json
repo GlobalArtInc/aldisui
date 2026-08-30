@@ -574,5 +574,6 @@
   "deleteIntegration": "Delete integration",
   "askDeleteIntegration": "Do you really want to delete this integration?",
   "backupFile": "Backup file",
-  "backupFileHint": "JSON file exported from a project"
+  "backupFileHint": "JSON file exported from a project",
+  "expand": "Expand"
 }

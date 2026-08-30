@@ -403,5 +403,6 @@
   "deleteIntegration": "Integration löschen",
   "askDeleteIntegration": "Diese Integration wirklich löschen?",
   "backupFile": "Sicherungsdatei",
-  "backupFileHint": "Aus einem Projekt exportierte JSON-Datei"
+  "backupFileHint": "Aus einem Projekt exportierte JSON-Datei",
+  "expand": "Vergrößern"
 }

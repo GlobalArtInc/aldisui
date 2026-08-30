@@ -16,10 +16,13 @@ import {
   type UiTab,
 } from '@globalart/platform-ui';
 import { ansiToHtml, stripAnsi } from '../../../core/ansi';
+import { readFlag, writeFlag } from '../../../core/preferences';
 import { TaskLogComponent, type TaskLogLine } from './task-log.component';
 import { ApiService } from '../../../core/api.service';
 import type { Task, TaskOutput } from '../../../core/models';
 import { isTaskActive, statusLabel, statusTone, taskDuration } from '../../../core/task-status';
+
+const EXPANDED = 'aldis.task-dialog-expanded';
 
 @Component({
   selector: 'aldis-task-dialog',
@@ -54,7 +57,7 @@ export class TaskDialogComponent {
   readonly task = signal<Task | null>(null);
   readonly lines = signal<TaskLogLine[]>([]);
   readonly busy = signal(false);
-  readonly fullscreen = signal(false);
+  readonly fullscreen = signal(readFlag(EXPANDED));
   readonly tab = signal('log');
 
   private readonly labels = signal(0);
@@ -115,7 +118,6 @@ export class TaskDialogComponent {
   }
 
   close(): void {
-    this.fullscreen.set(false);
     void this.router.navigate([], {
       relativeTo: this.route,
       queryParams: { t: null },
@@ -125,6 +127,7 @@ export class TaskDialogComponent {
 
   toggleSize(): void {
     this.fullscreen.update((value) => !value);
+    writeFlag(EXPANDED, this.fullscreen());
   }
 
   async stop(): Promise<void> {

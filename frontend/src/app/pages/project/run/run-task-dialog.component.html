@@ -19,6 +19,7 @@
         @switch (variable.type) {
           @case ('enum') {
             <ui-select
+              appendTo="body"
               [items]="variable.values ?? []"
               bindLabel="name"
               bindValue="value"
@@ -27,6 +28,7 @@
           }
           @case ('select') {
             <ui-select
+              appendTo="body"
               [items]="variable.values ?? []"
               bindLabel="name"
               bindValue="value"

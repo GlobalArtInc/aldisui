@@ -1,4 +1,8 @@
+@layer theme, base, vendor, components, utilities;
+
 @import 'tailwindcss';
+@import '../node_modules/@ng-select/ng-select/themes/default.theme.css' layer(vendor);
+@import '../node_modules/ngx-toastr/toastr.css' layer(vendor);
 
 @source '../node_modules/@globalart/platform-ui';
 @source './app';

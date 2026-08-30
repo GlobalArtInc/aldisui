@@ -57,7 +57,7 @@ export class ProjectShellComponent {
     return [
       {
         items: [
-          { label: this.t('dashboard'), icon: 'layout-dashboard', route: base },
+          { label: this.t('dashboard'), icon: 'layout-dashboard', route: base, exact: true },
           { label: this.t('taskTemplates'), icon: 'file-text', route: `${base}/templates` },
           { label: this.t('schedule'), icon: 'refresh-cw', route: `${base}/schedules` },
           { label: this.t('inventory'), icon: 'globe', route: `${base}/inventory` },

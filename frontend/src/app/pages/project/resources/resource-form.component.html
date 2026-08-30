@@ -6,13 +6,16 @@
 
     @for (field of fields(); track field.name) {
       <div uiField>
-        <label uiLabel [attr.for]="'field-' + field.name">
-          {{ field.label | translate }}{{ field.required ? ' *' : '' }}
-        </label>
+        @if (field.type !== 'switch') {
+          <label uiLabel [attr.for]="'field-' + field.name">
+            {{ field.label | translate }}{{ field.required ? ' *' : '' }}
+          </label>
+        }
 
         @switch (field.type) {
           @case ('select') {
             <ui-select
+              appendTo="body"
               [items]="choices(field)"
               bindLabel="label"
               bindValue="value"

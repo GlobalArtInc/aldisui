@@ -1,0 +1,74 @@
+<ui-page-header
+  [eyebrow]="'taskTemplates' | translate"
+  [heading]="template()?.name ?? ('template' | translate)"
+  [description]="template()?.description ?? undefined">
+  <button uiButton variant="primary" type="button" [disabled]="busy()" (click)="run()">
+    <ui-icon name="arrow-right" [size]="15"></ui-icon>
+    {{ 'run' | translate }}
+  </button>
+
+  <a uiButton variant="ghost" [routerLink]="['/project', projectId, 'templates']">
+    <ui-icon name="arrow-left" [size]="15"></ui-icon>
+    {{ 'taskTemplates' | translate }}
+  </a>
+</ui-page-header>
+
+@if (loading()) {
+  <ui-spinner></ui-spinner>
+} @else {
+  <div class="grid gap-6 xl:grid-cols-[340px_1fr]">
+    <ui-card [heading]="'template' | translate">
+      <ui-description-list>
+        <ui-description-row [label]="'name' | translate">{{ template()?.name }}</ui-description-row>
+        <ui-description-row [label]="'playbook' | translate">
+          <span class="font-mono text-sm">{{ template()?.playbook }}</span>
+        </ui-description-row>
+        <ui-description-row [label]="'type' | translate">
+          <ui-badge tone="neutral">{{ template()?.app || template()?.type || 'ansible' }}</ui-badge>
+        </ui-description-row>
+        @if (template()?.git_branch) {
+          <ui-description-row [label]="'branch' | translate">{{ template()?.git_branch }}</ui-description-row>
+        }
+        @if (template()?.arguments) {
+          <ui-description-row [label]="'arguments' | translate">
+            <span class="font-mono text-sm">{{ template()?.arguments }}</span>
+          </ui-description-row>
+        }
+        <ui-description-row [label]="'history' | translate">{{ template()?.tasks ?? 0 }}</ui-description-row>
+      </ui-description-list>
+    </ui-card>
+
+    <ui-card [heading]="'history' | translate">
+      @if (tasks().length === 0) {
+        <ui-empty-state icon="activity" [heading]="'noTasks' | translate"></ui-empty-state>
+      } @else {
+        <div uiTableWrap>
+          <table uiTable>
+            <thead>
+              <tr>
+                <th uiTh>#</th>
+                <th uiTh>{{ 'status' | translate }}</th>
+                <th uiTh>{{ 'user' | translate }}</th>
+                <th uiTh>{{ 'start' | translate }}</th>
+                <th uiTh>{{ 'duration' | translate }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (task of tasks(); track task.id) {
+                <tr uiTr class="cursor-pointer" [routerLink]="['/project', projectId, 'tasks', task.id]">
+                  <td uiTd class="font-mono text-sm text-ink-muted">{{ task.id }}</td>
+                  <td uiTd>
+                    <ui-badge [tone]="statusTone(task.status)">{{ statusLabel(task.status) | translate }}</ui-badge>
+                  </td>
+                  <td uiTd class="text-sm text-ink-muted">{{ task.user_name || '—' }}</td>
+                  <td uiTd class="font-mono text-sm text-ink-muted">{{ task.created | date: 'dd.MM HH:mm' }}</td>
+                  <td uiTd class="font-mono text-sm text-ink-muted">{{ duration(task.start, task.end) }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    </ui-card>
+  </div>
+}

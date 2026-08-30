@@ -1,0 +1,39 @@
+<ui-page-header [eyebrow]="'project' | translate" [heading]="config.titleKey | translate"></ui-page-header>
+
+@if (failed()) {
+  <ui-alert tone="warn" [heading]="'error' | translate">{{ 'unknownError' | translate }}</ui-alert>
+}
+
+<ui-data-table
+  [columns]="columns"
+  [rows]="rows()"
+  [rowTemplate]="resourceRow"
+  [rowSearch]="rowSearch"
+  [pageSize]="20"
+  [emptyIcon]="config.icon"
+  [searchPlaceholder]="'search' | translate"
+  [emptyHeading]="config.emptyKey | translate">
+</ui-data-table>
+
+<ng-template #resourceRow let-row>
+  @for (column of config.columns; track column.field) {
+    @switch (column.kind) {
+      @case ('mono') {
+        <td uiTd class="font-mono text-sm text-ink-muted">{{ cell(row, column.field) }}</td>
+      }
+      @case ('badge') {
+        <td uiTd><ui-badge tone="neutral">{{ cell(row, column.field) }}</ui-badge></td>
+      }
+      @case ('bool') {
+        <td uiTd>
+          <ui-badge [tone]="bool(row, column.field) ? 'ok' : 'neutral'">
+            {{ (bool(row, column.field) ? 'yes' : 'no') | translate }}
+          </ui-badge>
+        </td>
+      }
+      @default {
+        <td uiTd [class.text-right]="column.align === 'right'">{{ cell(row, column.field) }}</td>
+      }
+    }
+  }
+</ng-template>

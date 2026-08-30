@@ -1,0 +1,47 @@
+<ui-page-header [eyebrow]="'project' | translate" [heading]="'taskTemplates' | translate"></ui-page-header>
+
+<ui-data-table
+  [columns]="columns"
+  [rows]="templates()"
+  [rowTemplate]="templateRow"
+  [rowSearch]="rowSearch"
+  [pageSize]="20"
+  emptyIcon="file-text"
+  [searchPlaceholder]="'search' | translate"
+  [emptyHeading]="'noTemplates' | translate">
+</ui-data-table>
+
+<ng-template #templateRow let-template>
+  <td uiTd class="font-mono text-sm text-ink-muted">{{ template.id }}</td>
+  <td uiTd>
+    <a class="font-medium text-ink hover:text-signal" [routerLink]="[template.id]">{{ template.name }}</a>
+    @if (template.description) {
+      <span class="block truncate text-sm text-ink-muted">{{ template.description }}</span>
+    }
+  </td>
+  <td uiTd class="font-mono text-sm text-ink-muted">{{ template.playbook }}</td>
+  <td uiTd>
+    <ui-badge tone="neutral">{{ template.app || template.type || 'ansible' }}</ui-badge>
+  </td>
+  <td uiTd>
+    @if (template.last_task; as last) {
+      <a [routerLink]="['../tasks', last.id]">
+        <ui-badge [tone]="statusTone(last.status)">{{ statusLabel(last.status) | translate }}</ui-badge>
+      </a>
+    } @else {
+      <span class="text-sm text-ink-faint">{{ 'none' | translate }}</span>
+    }
+  </td>
+  <td uiTd class="text-right">
+    <button
+      uiButton
+      variant="secondary"
+      size="sm"
+      type="button"
+      [disabled]="running() === template.id"
+      (click)="run(template)">
+      <ui-icon name="arrow-right" [size]="15"></ui-icon>
+      {{ 'run' | translate }}
+    </button>
+  </td>
+</ng-template>

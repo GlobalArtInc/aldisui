@@ -1,12 +1,14 @@
-<div class="flex min-h-screen flex-col">
-  <header class="flex items-center justify-between border-b px-6 py-3">
-    <a routerLink="/" class="font-semibold tracking-wide">{{ 'aldis' | translate }}</a>
+<div class="flex min-h-screen flex-col bg-surface-sunken">
+  <header class="flex items-center justify-between border-b border-line bg-surface px-6 py-3">
+    <a routerLink="/" class="text-lg font-semibold tracking-wide text-ink">{{ 'aldis' | translate }}</a>
 
     <div class="flex items-center gap-3">
       @if (user(); as current) {
-        <span class="text-sm opacity-70">{{ current.name }}</span>
+        <span class="text-sm text-ink-muted">{{ current.name }}</span>
       }
-      <button uiButton variant="ghost" size="sm" (click)="signOut()">{{ 'signOut' | translate }}</button>
+      <button uiButton variant="ghost" size="sm" type="button" (click)="signOut()">
+        {{ 'signOut' | translate }}
+      </button>
     </div>
   </header>
 

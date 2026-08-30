@@ -1,0 +1,25 @@
+<ui-page-header [eyebrow]="'project' | translate" [heading]="'history' | translate"></ui-page-header>
+
+<ui-data-table
+  [columns]="columns"
+  [rows]="tasks()"
+  [rowTemplate]="taskRow"
+  [rowSearch]="rowSearch"
+  [pageSize]="25"
+  emptyIcon="activity"
+  [searchPlaceholder]="'search' | translate"
+  [emptyHeading]="'noTasks' | translate">
+</ui-data-table>
+
+<ng-template #taskRow let-task>
+  <td uiTd class="font-mono text-sm text-ink-muted">
+    <a class="hover:text-signal" [routerLink]="[task.id]">{{ task.id }}</a>
+  </td>
+  <td uiTd>
+    <a class="font-medium text-ink hover:text-signal" [routerLink]="[task.id]">{{ task.tpl_alias }}</a>
+  </td>
+  <td uiTd><ui-badge [tone]="statusTone(task.status)">{{ statusLabel(task.status) | translate }}</ui-badge></td>
+  <td uiTd class="text-sm text-ink-muted">{{ task.user_name || '—' }}</td>
+  <td uiTd class="font-mono text-sm text-ink-muted">{{ task.created | date: 'dd.MM.yyyy HH:mm' }}</td>
+  <td uiTd class="text-right font-mono text-sm text-ink-muted">{{ duration(task.start, task.end) }}</td>
+</ng-template>

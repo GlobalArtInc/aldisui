@@ -1,0 +1,83 @@
+<ui-page-header
+  [eyebrow]="'project' | translate"
+  [heading]="project()?.name ?? ('dashboard' | translate)"
+  [description]="'dashboard' | translate">
+  <a uiButton variant="primary" [routerLink]="['../templates']">
+    <ui-icon name="file-text" [size]="15"></ui-icon>
+    {{ 'taskTemplates' | translate }}
+  </a>
+</ui-page-header>
+
+@if (loading()) {
+  <ui-spinner></ui-spinner>
+} @else {
+  <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+    <ui-stat [label]="'taskTemplates' | translate" [value]="templates().length" tone="signal"></ui-stat>
+    <ui-stat [label]="'history' | translate" [value]="tasks().length" tone="info"></ui-stat>
+    <ui-stat [label]="'status_success' | translate" [value]="succeeded()" tone="ok"></ui-stat>
+    <ui-stat [label]="'error' | translate" [value]="failed()" tone="danger"></ui-stat>
+  </div>
+
+  <div class="grid gap-6 xl:grid-cols-2">
+    <ui-card [heading]="'taskTemplates' | translate" [eyebrow]="'run' | translate">
+      @if (templates().length === 0) {
+        <ui-empty-state icon="file-text" [heading]="'noTemplates' | translate"></ui-empty-state>
+      } @else {
+        <ul class="flex flex-col divide-y divide-line">
+          @for (template of templates().slice(0, 8); track template.id) {
+            <li class="flex items-center justify-between gap-3 py-2">
+              <a class="flex min-w-0 flex-col" [routerLink]="['../templates', template.id]">
+                <span class="truncate font-medium text-ink">{{ template.name }}</span>
+                <span class="truncate text-sm text-ink-muted">{{ template.playbook }}</span>
+              </a>
+
+              <div class="flex shrink-0 items-center gap-2">
+                @if (template.last_task; as last) {
+                  <ui-badge [tone]="statusTone(last.status)">{{ statusLabel(last.status) | translate }}</ui-badge>
+                }
+                <button
+                  uiButton
+                  variant="secondary"
+                  size="sm"
+                  type="button"
+                  [disabled]="running() === template.id"
+                  (click)="run(template)">
+                  {{ 'run' | translate }}
+                </button>
+              </div>
+            </li>
+          }
+        </ul>
+      }
+    </ui-card>
+
+    <ui-card [heading]="'history' | translate" [eyebrow]="'tasks' | translate">
+      @if (recent().length === 0) {
+        <ui-empty-state icon="activity" [heading]="'noTasks' | translate"></ui-empty-state>
+      } @else {
+        <div uiTableWrap>
+          <table uiTable>
+            <thead>
+              <tr>
+                <th uiTh>#</th>
+                <th uiTh>{{ 'template' | translate }}</th>
+                <th uiTh>{{ 'status' | translate }}</th>
+                <th uiTh>{{ 'start' | translate }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (task of recent(); track task.id) {
+                <tr uiTr [routerLink]="['../tasks', task.id]" class="cursor-pointer">
+                  <td uiTd class="font-mono text-sm text-ink-muted">{{ task.id }}</td>
+                  <td uiTd class="truncate">{{ task.tpl_alias }}</td>
+                  <td uiTd><ui-badge [tone]="statusTone(task.status)">{{ statusLabel(task.status) | translate }}</ui-badge></td>
+                  <td uiTd class="font-mono text-sm text-ink-muted">{{ task.created | date: 'dd.MM HH:mm' }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    </ui-card>
+  </div>
+}

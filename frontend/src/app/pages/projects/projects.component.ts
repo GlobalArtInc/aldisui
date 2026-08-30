@@ -1,31 +1,44 @@
+import { DatePipe } from '@angular/common';
 import { Component, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
-import { firstValueFrom } from 'rxjs';
-import { UiCardComponent } from '@globalart/platform-ui';
-import { ApiService } from '../../core/api.service';
-
-export interface Project {
-  id: number;
-  name: string;
-  created: string;
-}
+import {
+  UiBadgeComponent,
+  UiCardComponent,
+  UiEmptyStateComponent,
+  UiIconComponent,
+  UiPageHeaderComponent,
+  UiSpinnerComponent,
+} from '@globalart/platform-ui';
+import type { Project } from '../../core/models';
+import { ProjectService } from '../../core/project.service';
 
 @Component({
   selector: 'aldis-projects',
   standalone: true,
-  imports: [RouterLink, TranslatePipe, UiCardComponent],
+  imports: [
+    DatePipe,
+    RouterLink,
+    TranslatePipe,
+    UiBadgeComponent,
+    UiCardComponent,
+    UiEmptyStateComponent,
+    UiIconComponent,
+    UiPageHeaderComponent,
+    UiSpinnerComponent,
+  ],
   templateUrl: './projects.component.html',
 })
 export class ProjectsComponent {
-  private readonly api = inject(ApiService);
+  private readonly service = inject(ProjectService);
 
   readonly projects = signal<Project[]>([]);
-  readonly loaded = signal(false);
+  readonly loading = signal(true);
 
   constructor() {
-    void firstValueFrom(this.api.get<Project[]>('projects'))
-      .then((projects) => this.projects.set(projects ?? []))
-      .finally(() => this.loaded.set(true));
+    void this.service
+      .loadAll()
+      .then((projects) => this.projects.set(projects))
+      .finally(() => this.loading.set(false));
   }
 }

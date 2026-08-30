@@ -1,0 +1,73 @@
+<ui-page-header
+  [eyebrow]="task()?.tpl_alias ?? ('task' | translate: { expr: taskId })"
+  [heading]="'task' | translate: { expr: taskId }">
+  <div headerMeta class="flex items-center gap-2">
+    @if (task(); as current) {
+      <ui-badge [tone]="tone()">{{ statusLabel(current.status) | translate }}</ui-badge>
+    }
+  </div>
+
+  <div class="flex flex-wrap items-center gap-2">
+    @if (task()?.status === 'waiting_confirmation') {
+      <button uiButton variant="primary" size="sm" type="button" [disabled]="busy()" (click)="confirm()">
+        {{ 'confirmTask' | translate }}
+      </button>
+      <button uiButton variant="danger" size="sm" type="button" [disabled]="busy()" (click)="reject()">
+        {{ 'workflowReject' | translate }}
+      </button>
+    }
+
+    @if (active()) {
+      <button uiButton variant="secondary" size="sm" type="button" [disabled]="busy()" (click)="stop()">
+        <ui-icon name="ban" [size]="15"></ui-icon>
+        {{ 'stop' | translate }}
+      </button>
+    }
+
+    <a uiButton variant="ghost" size="sm" [href]="rawLogUrl" target="_blank" rel="noopener">
+      <ui-icon name="external-link" [size]="15"></ui-icon>
+      {{ 'raw_log' | translate }}
+    </a>
+
+    <a uiButton variant="ghost" size="sm" [routerLink]="['/project', projectId, 'tasks']">
+      <ui-icon name="arrow-left" [size]="15"></ui-icon>
+      {{ 'history' | translate }}
+    </a>
+  </div>
+</ui-page-header>
+
+@if (loading()) {
+  <ui-spinner></ui-spinner>
+} @else {
+  <div class="grid gap-6 xl:grid-cols-[320px_1fr]">
+    <ui-card [heading]="'task' | translate: { expr: taskId }">
+      <ui-description-list>
+        <ui-description-row [label]="'status' | translate">
+          <ui-badge [tone]="tone()">{{ label() | translate }}</ui-badge>
+        </ui-description-row>
+        <ui-description-row [label]="'template' | translate">{{ task()?.tpl_alias }}</ui-description-row>
+        <ui-description-row [label]="'playbook' | translate">{{ task()?.tpl_playbook }}</ui-description-row>
+        <ui-description-row [label]="'user' | translate">{{ task()?.user_name || '—' }}</ui-description-row>
+        <ui-description-row [label]="'start' | translate">
+          {{ task()?.created | date: 'dd.MM.yyyy HH:mm:ss' }}
+        </ui-description-row>
+        <ui-description-row [label]="'duration' | translate">{{ duration() }}</ui-description-row>
+        @if (task()?.commit_hash) {
+          <ui-description-row [label]="'commit' | translate">
+            <span class="font-mono text-sm">{{ task()?.commit_hash?.slice(0, 10) }}</span>
+          </ui-description-row>
+        }
+      </ui-description-list>
+    </ui-card>
+
+    <ui-card [heading]="'output' | translate" [padded]="false">
+      <div class="max-h-[70vh] overflow-auto bg-surface-sunken p-4 font-mono text-[13px] leading-relaxed">
+        @for (line of lines(); track line.id) {
+          <div class="whitespace-pre-wrap break-words" [innerHTML]="line.html"></div>
+        } @empty {
+          <span class="text-ink-faint">{{ 'none' | translate }}</span>
+        }
+      </div>
+    </ui-card>
+  </div>
+}

@@ -635,6 +635,21 @@ func servePublic(w http.ResponseWriter, r *http.Request) {
 	serveFile(w, r, newPath)
 }
 
+func cacheControlFor(name string) string {
+	if strings.HasSuffix(name, ".html") {
+		return ""
+	}
+
+	if strings.Contains(name, "assets/") {
+		return "no-cache"
+	}
+
+	return fmt.Sprintf(
+		"max-age=%d, public, must-revalidate, proxy-revalidate",
+		int((24 * time.Hour).Seconds()),
+	)
+}
+
 func serveFile(w http.ResponseWriter, r *http.Request, name string) {
 	res, err := publicAssets.ReadFile(
 		fmt.Sprintf("public/%s", name),
@@ -667,11 +682,8 @@ func serveFile(w http.ResponseWriter, r *http.Request, name string) {
 		)
 	}
 
-	if !strings.HasSuffix(name, ".html") {
-		w.Header().Add(
-			"Cache-Control",
-			fmt.Sprintf("max-age=%d, public, must-revalidate, proxy-revalidate", 24*time.Hour),
-		)
+	if cacheControl := cacheControlFor(name); cacheControl != "" {
+		w.Header().Add("Cache-Control", cacheControl)
 	}
 
 	http.ServeContent(

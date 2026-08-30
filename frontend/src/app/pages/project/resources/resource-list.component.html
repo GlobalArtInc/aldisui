@@ -1,4 +1,11 @@
-<ui-page-header [eyebrow]="'project' | translate" [heading]="config.titleKey | translate"></ui-page-header>
+<ui-page-header [eyebrow]="'project' | translate" [heading]="config.titleKey | translate">
+  @if (config.fields) {
+    <button uiButton variant="primary" type="button" (click)="create()">
+      <ui-icon name="plus" [size]="15"></ui-icon>
+      {{ (config.createKey ?? 'create') | translate }}
+    </button>
+  }
+</ui-page-header>
 
 @if (failed()) {
   <ui-alert tone="warn" [heading]="'error' | translate">{{ 'unknownError' | translate }}</ui-alert>
@@ -9,6 +16,7 @@
   [rows]="rows()"
   [rowTemplate]="resourceRow"
   [rowSearch]="rowSearch"
+  [reload]="reload"
   [pageSize]="20"
   [emptyIcon]="config.icon"
   [searchPlaceholder]="'search' | translate"
@@ -36,4 +44,48 @@
       }
     }
   }
+
+  @if (config.fields) {
+    <td uiTd class="text-right whitespace-nowrap">
+      <button
+        uiButton
+        variant="ghost"
+        size="icon-sm"
+        type="button"
+        [attr.aria-label]="'edit' | translate"
+        (click)="edit(row)">
+        <ui-icon name="pencil" [size]="15"></ui-icon>
+      </button>
+      <button
+        uiButton
+        variant="ghost-danger"
+        size="icon-sm"
+        type="button"
+        [attr.aria-label]="(config.deleteKey ?? 'edit') | translate"
+        (click)="removing.set(row)">
+        <ui-icon name="trash-2" [size]="15"></ui-icon>
+      </button>
+    </td>
+  }
 </ng-template>
+
+@if (config.fields) {
+  <aldis-resource-form
+    [projectId]="projectId"
+    [config]="config"
+    [options]="options()"
+    [row]="editing()"
+    [opened]="formOpen()"
+    (saved)="saved()"
+    (closed)="close()"></aldis-resource-form>
+
+  <ui-confirm-modal
+    [open]="!!removing()"
+    [title]="(config.deleteKey ?? 'delete') | translate"
+    [question]="(config.askKey ?? 'askDelete') | translate"
+    [confirmLabel]="'yes' | translate"
+    [cancelLabel]="'cancel' | translate"
+    [destructive]="true"
+    (confirmed)="remove()"
+    (closed)="removing.set(null)"></ui-confirm-modal>
+}

@@ -557,5 +557,11 @@
   "status_running": "Running",
   "status_stopping": "Stopping",
   "arguments": "Arguments",
-  "stats": "Stats"
+  "stats": "Stats",
+  "delete": "Delete",
+  "active": "Active",
+  "passphrase": "Passphrase",
+  "becomeKey": "Become Key",
+  "inventoryContent": "Inventory",
+  "askDelete": "Do you really want to delete this?"
 }

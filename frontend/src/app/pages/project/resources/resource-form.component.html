@@ -1,0 +1,65 @@
+<ui-modal [open]="open()" [config]="modal()" [loading]="busy()" (action)="action($event)" (closed)="closed.emit()">
+  <div class="flex flex-col gap-4">
+    @if (failed()) {
+      <ui-alert tone="danger" [heading]="'error' | translate">{{ 'unknownError' | translate }}</ui-alert>
+    }
+
+    @for (field of fields(); track field.name) {
+      <div uiField>
+        <label uiLabel [attr.for]="'field-' + field.name">
+          {{ field.label | translate }}{{ field.required ? ' *' : '' }}
+        </label>
+
+        @switch (field.type) {
+          @case ('select') {
+            <ui-select
+              [items]="choices(field)"
+              bindLabel="label"
+              bindValue="value"
+              [value]="$any(value(field))"
+              (valueChange)="set(field, $event)"></ui-select>
+          }
+          @case ('switch') {
+            <ui-switch
+              [checked]="!!value(field)"
+              (checkedChange)="set(field, $event)"
+              [label]="field.label | translate"></ui-switch>
+          }
+          @case ('textarea') {
+            <textarea
+              [id]="'field-' + field.name"
+              uiInput
+              rows="6"
+              [ngModel]="value(field)"
+              (ngModelChange)="set(field, $event)"></textarea>
+          }
+          @case ('password') {
+            <input
+              [id]="'field-' + field.name"
+              uiInput
+              type="password"
+              autocomplete="new-password"
+              [ngModel]="value(field)"
+              (ngModelChange)="set(field, $event)" />
+          }
+          @case ('number') {
+            <input
+              [id]="'field-' + field.name"
+              uiInput
+              type="number"
+              [ngModel]="value(field)"
+              (ngModelChange)="set(field, $event)" />
+          }
+          @default {
+            <input
+              [id]="'field-' + field.name"
+              uiInput
+              type="text"
+              [ngModel]="value(field)"
+              (ngModelChange)="set(field, $event)" />
+          }
+        }
+      </div>
+    }
+  </div>
+</ui-modal>

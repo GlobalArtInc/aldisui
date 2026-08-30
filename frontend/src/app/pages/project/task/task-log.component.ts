@@ -43,6 +43,7 @@ export class TaskLogComponent implements AfterViewChecked {
   @Input() active = false;
   @Input() rawUrl = '';
   @Input() tall = false;
+  @Input() fill = false;
 
   @ViewChild('scroller') private scroller?: ElementRef<HTMLElement>;
 
@@ -63,11 +64,16 @@ export class TaskLogComponent implements AfterViewChecked {
   readonly total = computed(() => this.source().length);
   readonly shown = computed(() => this.rendered().length);
 
-  readonly bodyClass = computed(
-    () =>
-      'relative flex-1 overflow-auto rounded-panel border border-line bg-[#0f1115] py-2 font-mono text-[13px] leading-[1.55] text-zinc-200 ' +
-      (this.tall ? 'max-h-[68vh] min-h-[38vh]' : 'max-h-[46vh] min-h-[24vh]'),
-  );
+  readonly bodyClass = computed(() => {
+    const base =
+      'relative overflow-auto rounded-panel border border-line bg-[#0f1115] py-2 font-mono text-[13px] leading-[1.55] text-zinc-200 ';
+
+    if (this.fill) {
+      return base + 'min-h-0 flex-1';
+    }
+
+    return base + (this.tall ? 'flex-1 max-h-[68vh] min-h-[38vh]' : 'flex-1 max-h-[46vh] min-h-[24vh]');
+  });
 
   private lastCount = 0;
 

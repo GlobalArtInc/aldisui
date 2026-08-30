@@ -84,6 +84,7 @@ export class TaskDialogComponent {
     title: this.title(),
     size: 'xl',
     fullscreen: this.fullscreen(),
+    scrollBody: this.tab() !== 'log',
     showHeaderClose: true,
   }));
 

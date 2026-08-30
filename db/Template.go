@@ -177,6 +177,9 @@ func ValidateSurveyVar(v SurveyVar) error {
 				allowed[ev.Value] = struct{}{}
 			}
 			for _, dv := range v.DefaultValue.Values {
+				if dv == "" {
+					continue
+				}
 				if _, ok := allowed[dv]; !ok {
 					return common_errors.NewValidationError(
 						"survey variable \"" + v.Name + "\": default_value \"" + dv + "\" is not in values list")
@@ -195,7 +198,7 @@ func ValidateSurveyVar(v SurveyVar) error {
 					allowed[ev.Value] = struct{}{}
 				}
 				dv := v.DefaultValue.Values[0]
-				if _, ok := allowed[dv]; !ok {
+				if _, ok := allowed[dv]; dv != "" && !ok {
 					return common_errors.NewValidationError(
 						"survey variable \"" + v.Name + "\": default_value \"" + dv + "\" is not in values list")
 				}

@@ -6,7 +6,7 @@
   (closed)="closed.emit()">
   <div class="flex flex-col gap-4">
     @if (failed()) {
-      <ui-alert tone="danger" [heading]="'error' | translate">{{ 'unknownError' | translate }}</ui-alert>
+      <ui-alert tone="danger" [heading]="'error' | translate">{{ reason() }}</ui-alert>
     }
 
     @if (current() === 'restore') {

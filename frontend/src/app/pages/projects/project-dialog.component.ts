@@ -54,6 +54,7 @@ export class ProjectDialogComponent {
     if (value === 'restore') {
       this.name.set('');
       this.files.set([]);
+      this.reason.set('');
     }
   }
 
@@ -66,6 +67,7 @@ export class ProjectDialogComponent {
   readonly files = signal<File[]>([]);
   readonly busy = signal(false);
   readonly failed = signal(false);
+  readonly reason = signal('');
 
   readonly config = computed<UiModalConfig>(() => ({
     title: this.current() === 'restore' ? this.t('restoreProject') : this.t('newProject'),
@@ -86,6 +88,7 @@ export class ProjectDialogComponent {
 
     this.busy.set(true);
     this.failed.set(false);
+    this.reason.set('');
 
     try {
       const project =
@@ -97,8 +100,9 @@ export class ProjectDialogComponent {
       if (project) {
         await this.router.navigate(['/project', project.id]);
       }
-    } catch {
+    } catch (error) {
       this.failed.set(true);
+      this.reason.set(this.describe(error));
     } finally {
       this.busy.set(false);
     }
@@ -128,6 +132,16 @@ export class ProjectDialogComponent {
     backup.meta = { ...(backup.meta ?? {}), name: this.name() };
 
     return firstValueFrom(this.api.post<Project>('projects/restore', backup));
+  }
+
+  private describe(error: unknown): string {
+    const body = (error as { error?: { error?: string } } | null)?.error;
+
+    if (body && typeof body.error === 'string') {
+      return body.error;
+    }
+
+    return this.t('unknownError');
   }
 
   private t(key: string): string {

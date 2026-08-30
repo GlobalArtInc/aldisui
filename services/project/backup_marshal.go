@@ -1,6 +1,7 @@
 package project
 
 import (
+	"encoding/json"
 	"fmt"
 	"reflect"
 
@@ -188,6 +189,16 @@ func unmarshalValueWithBackupTags(data any, v reflect.Value) error {
 			v.Set(reflect.New(v.Type().Elem()))
 		}
 		return unmarshalValueWithBackupTags(data, v.Elem())
+	}
+
+	if v.CanAddr() {
+		if unmarshaler, ok := v.Addr().Interface().(json.Unmarshaler); ok {
+			raw, err := json.Marshal(data)
+			if err != nil {
+				return err
+			}
+			return unmarshaler.UnmarshalJSON(raw)
+		}
 	}
 
 	// Handle structs

@@ -49,6 +49,15 @@ func NewAccessKeyEncryptionService(
 	}
 }
 
+func keyCarriesSecret(keyType db.AccessKeyType) bool {
+	switch keyType {
+	case db.AccessKeyString, db.AccessKeySSH, db.AccessKeyLoginPassword:
+		return true
+	default:
+		return false
+	}
+}
+
 func unmarshalAppropriateField(key *db.AccessKey, secret []byte) (err error) {
 	switch key.Type {
 	case db.AccessKeyString:
@@ -151,7 +160,7 @@ func (s *accessKeyEncryptionServiceImpl) DeserializeSecret(key *db.AccessKey) er
 		return err
 	}
 
-	if key.Type != db.AccessKeyNone && strings.TrimSpace(ciphertext) == "" {
+	if keyCarriesSecret(key.Type) && strings.TrimSpace(ciphertext) == "" {
 		return common_errors.NewValidationError(
 			fmt.Sprintf("key '%s' has no secret yet: fill it in the key store", key.Name))
 	}

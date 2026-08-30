@@ -26,6 +26,10 @@ func TestDeserializeSecretWithoutSecret(t *testing.T) {
 			name: "the empty key type needs no secret",
 			key:  db.AccessKey{Name: "None", Type: db.AccessKeyNone},
 		},
+		{
+			name: "a key that was never set needs no secret",
+			key:  db.AccessKey{},
+		},
 	}
 
 	for _, tt := range tests {

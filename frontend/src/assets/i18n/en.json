@@ -566,5 +566,6 @@
   "askDelete": "Do you really want to delete this?",
   "details": "Details",
   "message": "Message",
-  "copy": "Copy"
+  "copy": "Copy",
+  "or": "or"
 }

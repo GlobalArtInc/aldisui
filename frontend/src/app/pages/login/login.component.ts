@@ -2,13 +2,27 @@ import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
-import { UiAlertComponent, UiButtonDirective, UiCardComponent, UiFormFieldComponent } from '@globalart/platform-ui';
+import {
+  UiAlertComponent,
+  UiButtonDirective,
+  UiCardComponent,
+  UiFormFieldComponent,
+  UiInputDirective,
+} from '@globalart/platform-ui';
 import { AuthService, LoginMetadata } from '../../core/auth.service';
 
 @Component({
   selector: 'aldis-login',
   standalone: true,
-  imports: [ReactiveFormsModule, TranslatePipe, UiAlertComponent, UiButtonDirective, UiCardComponent, UiFormFieldComponent],
+  imports: [
+    ReactiveFormsModule,
+    TranslatePipe,
+    UiAlertComponent,
+    UiButtonDirective,
+    UiCardComponent,
+    UiFormFieldComponent,
+    UiInputDirective,
+  ],
   templateUrl: './login.component.html',
 })
 export class LoginComponent {

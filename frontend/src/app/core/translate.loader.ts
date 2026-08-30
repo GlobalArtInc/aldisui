@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { TranslateLoader, type TranslationObject } from '@ngx-translate/core';
 import { Observable, map } from 'rxjs';
@@ -11,7 +11,9 @@ export class AldisTranslateLoader implements TranslateLoader {
 
   getTranslation(language: string): Observable<TranslationObject> {
     return this.http
-      .get<Record<string, string>>(`assets/i18n/${language}.json`)
+      .get<Record<string, string>>(`assets/i18n/${language}.json`, {
+        headers: new HttpHeaders({ 'Cache-Control': 'no-cache' }),
+      })
       .pipe(map((translations) => this.normalize(translations)));
   }
 

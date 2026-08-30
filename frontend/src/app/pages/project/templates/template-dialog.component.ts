@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output, computed, inject, signal } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { catchError, firstValueFrom, of } from 'rxjs';
@@ -40,7 +40,7 @@ const APPS = ['ansible', 'terraform', 'tofu', 'terragrunt', 'bash', 'powershell'
   ],
   templateUrl: './template-dialog.component.html',
 })
-export class TemplateDialogComponent {
+export class TemplateDialogComponent implements OnInit {
   private readonly api = inject(ApiService);
   private readonly translate = inject(TranslateService);
 
@@ -101,7 +101,7 @@ export class TemplateDialogComponent {
     closeButton: { label: this.t('cancel') },
   }));
 
-  constructor() {
+  ngOnInit(): void {
     void this.loadOptions();
   }
 

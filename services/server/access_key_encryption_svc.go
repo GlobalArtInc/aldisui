@@ -151,11 +151,17 @@ func (s *accessKeyEncryptionServiceImpl) DeserializeSecret(key *db.AccessKey) er
 		return err
 	}
 
+	if key.Type != db.AccessKeyNone && strings.TrimSpace(ciphertext) == "" {
+		return common_errors.NewValidationError(
+			fmt.Sprintf("key '%s' has no secret yet: fill it in the key store", key.Name))
+	}
+
 	err = unmarshalAppropriateField(key, []byte(ciphertext))
 
 	var syntaxError *json.SyntaxError
 	if errors.As(err, &syntaxError) {
-		err = fmt.Errorf("secret must be valid json in key '%s'", key.Name)
+		err = common_errors.NewValidationError(
+			fmt.Sprintf("secret must be valid json in key '%s'", key.Name))
 	}
 
 	return err

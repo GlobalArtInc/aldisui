@@ -1,5 +1,9 @@
 <ui-modal [open]="!!current()" [config]="config()" [loading]="busy()" (action)="action($event)" (closed)="closed.emit()">
   <div class="flex flex-col gap-4">
+    @if (reason()) {
+      <ui-alert tone="danger" [heading]="'error' | translate">{{ reason() }}</ui-alert>
+    }
+
     <div uiField>
       <label uiLabel for="task-message">{{ 'messageOptional' | translate }}</label>
       <input

@@ -68,7 +68,7 @@ func (c *TaskController) AddTask(w http.ResponseWriter, r *http.Request) {
 			"template_id": taskObj.TemplateID,
 			"user_id":     user.ID,
 		}).WithError(err).Error("Cannot add task")
-		w.WriteHeader(http.StatusInternalServerError)
+		helpers.WriteError(w, err)
 		return
 	}
 

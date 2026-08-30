@@ -3,6 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { firstValueFrom } from 'rxjs';
 import {
+  UiAlertComponent,
   UiFieldDirective,
   UiHintDirective,
   UiInputDirective,
@@ -21,6 +22,7 @@ import type { SurveyVar, Task, Template } from '../../../core/models';
   imports: [
     FormsModule,
     TranslatePipe,
+    UiAlertComponent,
     UiFieldDirective,
     UiHintDirective,
     UiInputDirective,
@@ -41,6 +43,7 @@ export class RunTaskDialogComponent {
     this.current.set(value);
     this.values.set(this.defaults(value));
     this.message.set('');
+    this.reason.set('');
   }
 
   @Output() readonly started = new EventEmitter<Task>();
@@ -53,6 +56,7 @@ export class RunTaskDialogComponent {
   readonly dryRun = signal(false);
   readonly diff = signal(false);
   readonly busy = signal(false);
+  readonly reason = signal('');
 
   readonly vars = computed<SurveyVar[]>(() => this.current()?.survey_vars ?? []);
 
@@ -86,6 +90,8 @@ export class RunTaskDialogComponent {
     }
 
     this.busy.set(true);
+    this.reason.set('');
+
     try {
       const task = await firstValueFrom(
         this.api.post<Task>(`project/${this.projectId}/tasks`, {
@@ -100,6 +106,8 @@ export class RunTaskDialogComponent {
         }),
       );
       this.started.emit(task);
+    } catch (error) {
+      this.reason.set(this.describe(error));
     } finally {
       this.busy.set(false);
     }
@@ -112,6 +120,16 @@ export class RunTaskDialogComponent {
       values[variable.name] = Array.isArray(fallback) ? (fallback[0] ?? '') : (fallback ?? '');
     }
     return values;
+  }
+
+  private describe(error: unknown): string {
+    const body = (error as { error?: { error?: string } } | null)?.error;
+
+    if (body && typeof body.error === 'string') {
+      return body.error;
+    }
+
+    return this.t('unknownError');
   }
 
   private t(key: string): string {

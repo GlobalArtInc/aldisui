@@ -355,5 +355,8 @@
   "status_rejected": "Afgewezen",
   "status_running": "Actief",
   "status_stopping": "Stoppen",
-  "stats": "Statistieken"
+  "stats": "Statistieken",
+  "details": "Details",
+  "message": "Bericht",
+  "copy": "Kopiëren"
 }

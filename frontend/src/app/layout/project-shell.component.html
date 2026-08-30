@@ -5,11 +5,11 @@
         menuTrigger
         type="button"
         class="flex w-full items-center gap-3 rounded-control px-2 py-2 text-left transition-colors hover:bg-surface-hover"
-        [class.justify-center]="shell.collapsed()"
-        [attr.title]="shell.collapsed() ? project()?.name : null">
+        [class.justify-center]="shell.railed()"
+        [attr.title]="shell.railed() ? project()?.name : null">
         <ui-avatar [name]="project()?.name ?? ''" size="sm"></ui-avatar>
 
-        @if (!shell.collapsed()) {
+        @if (!shell.railed()) {
           <span class="flex min-w-0 flex-1 flex-col">
             <span class="truncate font-medium text-ink">{{ project()?.name }}</span>
             <span class="truncate text-sm text-ink-muted">{{ role() }}</span>
@@ -48,4 +48,6 @@
   <div class="flex flex-col gap-6">
     <router-outlet />
   </div>
+
+  <aldis-task-dialog></aldis-task-dialog>
 </ui-shell>

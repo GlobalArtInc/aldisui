@@ -364,5 +364,8 @@
   "status_rejected": "Отклонена",
   "status_running": "Выполняется",
   "status_stopping": "Остановка",
-  "stats": "Статистика"
+  "stats": "Статистика",
+  "details": "Детали",
+  "message": "Сообщение",
+  "copy": "Копировать"
 }

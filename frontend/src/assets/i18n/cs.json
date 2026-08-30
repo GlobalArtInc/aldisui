@@ -465,5 +465,8 @@
   "status_rejected": "Zamítnuto",
   "status_running": "Běží",
   "status_stopping": "Zastavuje se",
-  "stats": "Statistiky"
+  "stats": "Statistiky",
+  "details": "Detaily",
+  "message": "Zpráva",
+  "copy": "Kopírovat"
 }

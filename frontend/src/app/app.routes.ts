@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { activeProjectGuard, signedInGuard } from './core/auth.guard';
+import { activeProjectGuard, signedInGuard, taskDialogRedirect } from './core/auth.guard';
 import { LoginComponent } from './pages/login/login.component';
 import { ShellComponent } from './layout/shell.component';
 import { ProjectShellComponent } from './layout/project-shell.component';
@@ -243,7 +243,8 @@ export const routes: Routes = [
       },
       {
         path: 'tasks/:taskId',
-        loadComponent: () => import('./pages/project/task/task.component').then((m) => m.TaskComponent),
+        canActivate: [taskDialogRedirect],
+        children: [],
       },
       resourceRoute('inventory'),
       resourceRoute('environment'),

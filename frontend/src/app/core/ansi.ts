@@ -1,22 +1,22 @@
 const ANSI = /\u001b\[([0-9;]*)m/g;
 
 const COLORS: Record<number, string> = {
-  30: 'text-ink-faint',
-  31: 'text-danger',
-  32: 'text-ok',
-  33: 'text-warn',
-  34: 'text-info',
-  35: 'text-signal',
-  36: 'text-info',
-  37: 'text-ink',
-  90: 'text-ink-faint',
-  91: 'text-danger',
-  92: 'text-ok',
-  93: 'text-warn',
-  94: 'text-info',
-  95: 'text-signal',
-  96: 'text-info',
-  97: 'text-ink',
+  30: 'text-zinc-500',
+  31: 'text-rose-400',
+  32: 'text-emerald-400',
+  33: 'text-amber-300',
+  34: 'text-sky-400',
+  35: 'text-fuchsia-400',
+  36: 'text-cyan-300',
+  37: 'text-zinc-100',
+  90: 'text-zinc-500',
+  91: 'text-rose-300',
+  92: 'text-emerald-300',
+  93: 'text-amber-200',
+  94: 'text-sky-300',
+  95: 'text-fuchsia-300',
+  96: 'text-cyan-200',
+  97: 'text-white',
 };
 
 function escapeHtml(value: string): string {
@@ -60,4 +60,8 @@ export function ansiToHtml(line: string): string {
 
   result += escapeHtml(line.slice(index));
   return result + '</span>'.repeat(open);
+}
+
+export function stripAnsi(line: string): string {
+  return line.replace(ANSI, '');
 }

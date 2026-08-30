@@ -355,5 +355,8 @@
   "status_rejected": "거부됨",
   "status_running": "실행 중",
   "status_stopping": "중지 중",
-  "stats": "통계"
+  "stats": "통계",
+  "details": "세부 정보",
+  "message": "메시지",
+  "copy": "복사"
 }

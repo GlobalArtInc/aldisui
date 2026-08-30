@@ -13,10 +13,12 @@
 
 <ng-template #taskRow let-task>
   <td uiTd class="font-mono text-sm text-ink-muted">
-    <a class="hover:text-signal" [routerLink]="[task.id]">{{ task.id }}</a>
+    <a class="hover:text-signal" [routerLink]="[]" [queryParams]="{ t: task.id }">{{ task.id }}</a>
   </td>
   <td uiTd>
-    <a class="font-medium text-ink hover:text-signal" [routerLink]="[task.id]">{{ task.tpl_alias }}</a>
+    <a class="font-medium text-ink hover:text-signal" [routerLink]="[]" [queryParams]="{ t: task.id }">
+      {{ task.tpl_alias }}
+    </a>
   </td>
   <td uiTd><ui-badge [tone]="statusTone(task.status)">{{ statusLabel(task.status) | translate }}</ui-badge></td>
   <td uiTd class="text-sm text-ink-muted">{{ task.user_name || '—' }}</td>

@@ -355,5 +355,8 @@
   "status_rejected": "Odrzucone",
   "status_running": "W trakcie",
   "status_stopping": "Zatrzymywanie",
-  "stats": "Statystyki"
+  "stats": "Statystyki",
+  "details": "Szczegóły",
+  "message": "Wiadomość",
+  "copy": "Kopiuj"
 }

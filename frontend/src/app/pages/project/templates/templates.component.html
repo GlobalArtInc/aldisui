@@ -25,7 +25,7 @@
   </td>
   <td uiTd>
     @if (template.last_task; as last) {
-      <a [routerLink]="['../tasks', last.id]">
+      <a [routerLink]="[]" [queryParams]="{ t: last.id }">
         <ui-badge [tone]="statusTone(last.status)">{{ statusLabel(last.status) | translate }}</ui-badge>
       </a>
     } @else {

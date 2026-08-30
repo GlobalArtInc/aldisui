@@ -355,5 +355,8 @@
   "status_rejected": "却下済み",
   "status_running": "実行中",
   "status_stopping": "停止中",
-  "stats": "統計"
+  "stats": "統計",
+  "details": "詳細",
+  "message": "メッセージ",
+  "copy": "コピー"
 }

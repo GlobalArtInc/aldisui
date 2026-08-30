@@ -14,6 +14,7 @@ import {
 } from '@globalart/platform-ui';
 import { ApiService } from '../core/api.service';
 import { LanguageMenuComponent } from './language-menu.component';
+import { TaskDialogComponent } from '../pages/project/task/task-dialog.component';
 import { AuthService } from '../core/auth.service';
 import { ProjectService } from '../core/project.service';
 
@@ -30,6 +31,7 @@ import { ProjectService } from '../core/project.service';
     UiMenuComponent,
     UiMenuItemDirective,
     LanguageMenuComponent,
+    TaskDialogComponent,
   ],
   templateUrl: './project-shell.component.html',
 })

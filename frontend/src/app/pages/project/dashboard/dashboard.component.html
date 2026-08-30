@@ -99,7 +99,9 @@
 
 <ng-template #taskRow let-task>
   <td uiTd>
-    <a class="font-mono font-medium text-ink hover:text-signal" [routerLink]="['tasks', task.id]">#{{ task.id }}</a>
+    <a class="font-mono font-medium text-ink hover:text-signal" [routerLink]="[]" [queryParams]="{ t: task.id }">
+      #{{ task.id }}
+    </a>
     <span class="block truncate text-sm text-ink-muted">
       {{ task.message || task.commit_message || task.tpl_alias }}
     </span>

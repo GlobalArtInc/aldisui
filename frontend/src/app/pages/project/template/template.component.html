@@ -55,7 +55,7 @@
             </thead>
             <tbody>
               @for (task of tasks(); track task.id) {
-                <tr uiTr class="cursor-pointer" [routerLink]="['/project', projectId, 'tasks', task.id]">
+                <tr uiTr class="cursor-pointer" [routerLink]="[]" [queryParams]="{ t: task.id }">
                   <td uiTd class="font-mono text-sm text-ink-muted">{{ task.id }}</td>
                   <td uiTd>
                     <ui-badge [tone]="statusTone(task.status)">{{ statusLabel(task.status) | translate }}</ui-badge>

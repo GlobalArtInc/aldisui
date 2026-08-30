@@ -168,8 +168,32 @@ func (c *TaskController) GetLastTasks(w http.ResponseWriter, r *http.Request) {
 
 // GetTask returns a task based on its id
 func (c *TaskController) GetTask(w http.ResponseWriter, r *http.Request) {
+	project := helpers.GetFromContext(r, "project").(db.Project)
 	task := helpers.GetFromContext(r, "task").(db.Task)
-	helpers.WriteJSON(w, http.StatusOK, task)
+
+	helpers.WriteJSON(w, http.StatusOK, c.describeTask(project.ID, task))
+}
+
+func (c *TaskController) describeTask(projectID int, task db.Task) db.TaskWithTpl {
+	result := db.TaskWithTpl{Task: task}
+
+	tpl, err := c.store.GetTemplate(projectID, task.TemplateID)
+	if err == nil {
+		result.TemplatePlaybook = tpl.Playbook
+		result.TemplateAlias = tpl.Name
+		result.TemplateType = tpl.Type
+		result.TemplateApp = tpl.App
+	}
+
+	if task.UserID != nil {
+		user, err := c.store.GetUser(*task.UserID)
+		if err == nil {
+			name := user.Name
+			result.UserName = &name
+		}
+	}
+
+	return result
 }
 
 func (c *TaskController) GetTaskPermissionsMiddleware(next http.Handler) http.Handler {

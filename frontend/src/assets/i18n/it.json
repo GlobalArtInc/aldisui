@@ -355,5 +355,8 @@
   "status_rejected": "Rifiutata",
   "status_running": "In esecuzione",
   "status_stopping": "Arresto in corso",
-  "stats": "Statistiche"
+  "stats": "Statistiche",
+  "details": "Dettagli",
+  "message": "Messaggio",
+  "copy": "Copia"
 }

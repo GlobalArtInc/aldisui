@@ -355,5 +355,8 @@
   "status_rejected": "已拒绝",
   "status_running": "运行中",
   "status_stopping": "停止中",
-  "stats": "统计"
+  "stats": "统计",
+  "details": "详情",
+  "message": "消息",
+  "copy": "复制"
 }

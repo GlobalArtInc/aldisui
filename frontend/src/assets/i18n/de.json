@@ -386,5 +386,8 @@
   "status_rejected": "Abgelehnt",
   "status_running": "Läuft",
   "status_stopping": "Wird gestoppt",
-  "stats": "Statistiken"
+  "stats": "Statistiken",
+  "details": "Details",
+  "message": "Nachricht",
+  "copy": "Kopieren"
 }

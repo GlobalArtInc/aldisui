@@ -355,5 +355,8 @@
   "status_rejected": "Rechazada",
   "status_running": "En ejecución",
   "status_stopping": "Deteniendo",
-  "stats": "Estadísticas"
+  "stats": "Estadísticas",
+  "details": "Detalles",
+  "message": "Mensaje",
+  "copy": "Copiar"
 }

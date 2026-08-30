@@ -22,3 +22,11 @@ export const activeProjectGuard: CanActivateFn = async () => {
   const project = await projects.active();
   return project ? router.createUrlTree(['/project', project.id]) : router.createUrlTree(['/projects']);
 };
+
+export const taskDialogRedirect: CanActivateFn = (route) => {
+  const router = inject(Router);
+  const projectId = route.parent?.paramMap.get('id');
+  const taskId = route.paramMap.get('taskId');
+
+  return router.createUrlTree(['/project', projectId, 'tasks'], { queryParams: { t: taskId } });
+};

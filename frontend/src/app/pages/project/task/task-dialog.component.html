@@ -1,0 +1,75 @@
+<ui-modal [open]="taskId() !== null" [config]="config()" (closed)="close()">
+  <div class="flex flex-col gap-4">
+    <div class="flex flex-wrap items-center gap-3">
+      @if (task(); as current) {
+        <ui-badge [tone]="tone()">{{ label() | translate }}</ui-badge>
+
+        <span class="text-sm text-ink-muted">
+          {{ 'by' | translate: { user_name: current.user_name || '—' } }},
+          {{ current.created | date: 'dd.MM.yyyy HH:mm' }}
+        </span>
+
+        <span class="flex items-center gap-1 text-sm text-ink-muted">
+          <ui-icon name="activity" [size]="14"></ui-icon>
+          {{ duration() }}
+        </span>
+      }
+
+      <span class="ml-auto flex items-center gap-2">
+        @if (task()?.status === 'waiting_confirmation') {
+          <button uiButton variant="primary" size="sm" type="button" [disabled]="busy()" (click)="confirm()">
+            {{ 'confirmTask' | translate }}
+          </button>
+          <button uiButton variant="danger" size="sm" type="button" [disabled]="busy()" (click)="reject()">
+            {{ 'workflowReject' | translate }}
+          </button>
+        }
+
+        @if (active()) {
+          <button uiButton variant="secondary" size="sm" type="button" [disabled]="busy()" (click)="stop()">
+            <ui-icon name="ban" [size]="15"></ui-icon>
+            {{ 'stop' | translate }}
+          </button>
+        }
+
+        <button uiButton variant="ghost" size="icon-sm" type="button" (click)="toggleSize()">
+          <ui-icon name="arrow-up-right" [size]="15"></ui-icon>
+        </button>
+      </span>
+    </div>
+
+    @if (task()?.commit_message) {
+      <p class="text-sm text-ink-muted">{{ task()?.commit_message }}</p>
+    }
+
+    <ui-tabs [tabs]="tabs()" [active]="tab()" (activeChange)="tab.set($event)"></ui-tabs>
+
+    @if (tab() === 'log') {
+      <aldis-task-log
+        [lines]="lines()"
+        [active]="active()"
+        [rawUrl]="rawLogUrl()"
+        [tall]="fullscreen()"></aldis-task-log>
+    } @else {
+      <ui-description-list>
+        <ui-description-row [label]="'template' | translate">{{ task()?.tpl_alias || '—' }}</ui-description-row>
+        <ui-description-row [label]="'playbook' | translate">
+          <span class="font-mono text-sm">{{ task()?.tpl_playbook || '—' }}</span>
+        </ui-description-row>
+        <ui-description-row [label]="'user' | translate">{{ task()?.user_name || '—' }}</ui-description-row>
+        <ui-description-row [label]="'start' | translate">
+          {{ task()?.created | date: 'dd.MM.yyyy HH:mm:ss' }}
+        </ui-description-row>
+        <ui-description-row [label]="'duration' | translate">{{ duration() }}</ui-description-row>
+        @if (task()?.commit_hash) {
+          <ui-description-row [label]="'commit' | translate">
+            <span class="font-mono text-sm">{{ task()?.commit_hash?.slice(0, 10) }}</span>
+          </ui-description-row>
+        }
+        @if (task()?.message) {
+          <ui-description-row [label]="'message' | translate">{{ task()?.message }}</ui-description-row>
+        }
+      </ui-description-list>
+    }
+  </div>
+</ui-modal>

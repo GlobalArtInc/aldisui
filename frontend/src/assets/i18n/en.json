@@ -563,5 +563,8 @@
   "passphrase": "Passphrase",
   "becomeKey": "Become Key",
   "inventoryContent": "Inventory",
-  "askDelete": "Do you really want to delete this?"
+  "askDelete": "Do you really want to delete this?",
+  "details": "Details",
+  "message": "Message",
+  "copy": "Copy"
 }

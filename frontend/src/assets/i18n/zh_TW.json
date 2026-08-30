@@ -386,5 +386,8 @@
   "status_rejected": "已拒絕",
   "status_running": "執行中",
   "status_stopping": "停止中",
-  "stats": "統計"
+  "stats": "統計",
+  "details": "詳細資料",
+  "message": "訊息",
+  "copy": "複製"
 }

@@ -1,0 +1,79 @@
+<div class="flex flex-wrap items-center gap-2">
+  <span class="relative flex-1 min-w-[200px]">
+    <ui-icon
+      name="search"
+      [size]="15"
+      class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-ink-faint"></ui-icon>
+    <input
+      uiInput
+      type="search"
+      class="pl-9"
+      [placeholder]="'search' | translate"
+      [ngModel]="query()"
+      (ngModelChange)="query.set($event)" />
+  </span>
+
+  <span class="text-sm text-ink-muted tabular-nums">{{ shown() }} / {{ total() }}</span>
+
+  <button
+    uiButton
+    variant="ghost"
+    size="sm"
+    type="button"
+    [class.text-signal]="showTime()"
+    (click)="showTime.set(!showTime())">
+    <ui-icon name="activity" [size]="15"></ui-icon>
+    {{ 'time' | translate }}
+  </button>
+
+  <button uiButton variant="ghost" size="sm" type="button" (click)="copy()">
+    <ui-icon [name]="copied() ? 'check' : 'copy'" [size]="15"></ui-icon>
+    {{ 'copy' | translate }}
+  </button>
+
+  @if (rawUrl) {
+    <a uiButton variant="ghost" size="sm" [href]="rawUrl" target="_blank" rel="noopener">
+      <ui-icon name="external-link" [size]="15"></ui-icon>
+      {{ 'raw_log' | translate }}
+    </a>
+  }
+</div>
+
+<div #scroller [class]="bodyClass()" (scroll)="onScroll()">
+  @for (line of rendered(); track line.id; let index = $index) {
+    <div [class]="rowClass(line)" style="content-visibility: auto; contain-intrinsic-size: auto 20px">
+      <span class="w-10 shrink-0 select-none text-right text-zinc-600 tabular-nums">{{ index + 1 }}</span>
+
+      @if (showTime()) {
+        <span class="w-16 shrink-0 select-none text-zinc-500 tabular-nums">{{ line.time | date: 'HH:mm:ss' }}</span>
+      }
+
+      <span class="min-w-0 flex-1 whitespace-pre-wrap break-words" [innerHTML]="line.html"></span>
+    </div>
+  } @empty {
+    <div class="px-3 py-6 text-center text-zinc-500">{{ 'none' | translate }}</div>
+  }
+
+  @if (active && follow()) {
+    <div class="px-3 py-1 text-zinc-500">
+      <span class="inline-flex items-center gap-2">
+        <span class="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-400"></span>
+        {{ 'status_running' | translate }}
+      </span>
+    </div>
+  }
+</div>
+
+@if (!follow()) {
+  <div class="flex justify-end">
+    <button
+      uiButton
+      variant="secondary"
+      size="icon-sm"
+      type="button"
+      [attr.aria-label]="'output' | translate"
+      (click)="toBottom()">
+      <ui-icon name="chevron-down" [size]="15"></ui-icon>
+    </button>
+  </div>
+}

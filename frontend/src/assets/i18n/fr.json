@@ -355,5 +355,8 @@
   "status_rejected": "Rejetée",
   "status_running": "En cours",
   "status_stopping": "Arrêt en cours",
-  "stats": "Statistiques"
+  "stats": "Statistiques",
+  "details": "Détails",
+  "message": "Message",
+  "copy": "Copier"
 }

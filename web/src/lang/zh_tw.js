@@ -62,7 +62,7 @@ export default {
   aldisUserChangebyloginLoginUser123Password: 'aldis user change-by-login --login user123 --password {makePasswordExample}',
   orCreateNewAdminUser: '或建立新的管理員使用者：',
   close2: '關閉',
-  aldis: 'Aldis',
+  aldis: 'ALDIS',
   dontHaveAccountOrCantSignIn: '沒有帳號或無法登入？',
   password2: '密碼',
   cancel: '取消',

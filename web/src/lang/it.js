@@ -62,7 +62,7 @@ export default {
   aldisUserChangebyloginLoginUser123Password: 'aldis user change-by-login --login user123 --password {makePasswordExample}',
   orCreateNewAdminUser: 'O crea un nuovo utente admin:',
   close2: 'Chiudi',
-  aldis: 'SEMAFORO',
+  aldis: 'ALDIS',
   dontHaveAccountOrCantSignIn: 'Non hai un account o non riesci ad accedere?',
   password2: 'Password',
   cancel: 'Annulla',

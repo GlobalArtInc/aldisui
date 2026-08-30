@@ -70,7 +70,7 @@ export default {
   aldisUserChangebyloginLoginUser123Password: 'aldis user change-by-login --login user123 --password {makePasswordExample}',
   orCreateNewAdminUser: 'Или создайте нового администратора:',
   close2: 'Закрыть',
-  aldis: 'СИГНАЛ',
+  aldis: 'ALDIS',
   dontHaveAccountOrCantSignIn: 'Нет аккаунта или не можете войти?',
   password2: 'Пароль',
   cancel: 'Отмена',

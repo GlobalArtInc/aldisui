@@ -376,5 +376,8 @@
   "inventoryContent": "Инвентарь",
   "askDelete": "Действительно удалить?",
   "theme": "Тема",
-  "id": "ID"
+  "id": "ID",
+  "newIntegration": "Новая интеграция",
+  "deleteIntegration": "Удалить интеграцию",
+  "askDeleteIntegration": "Действительно удалить эту интеграцию?"
 }

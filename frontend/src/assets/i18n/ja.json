@@ -367,5 +367,8 @@
   "inventoryContent": "インベントリ",
   "askDelete": "本当に削除しますか？",
   "theme": "テーマ",
-  "id": "ID"
+  "id": "ID",
+  "newIntegration": "新しい連携",
+  "deleteIntegration": "連携を削除",
+  "askDeleteIntegration": "この連携を削除しますか？"
 }

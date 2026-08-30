@@ -367,5 +367,8 @@
   "inventoryContent": "Inventario",
   "askDelete": "Vuoi davvero eliminarlo?",
   "theme": "Tema",
-  "id": "ID"
+  "id": "ID",
+  "newIntegration": "Nuova integrazione",
+  "deleteIntegration": "Elimina integrazione",
+  "askDeleteIntegration": "Vuoi davvero eliminare questa integrazione?"
 }

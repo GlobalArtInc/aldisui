@@ -367,5 +367,8 @@
   "inventoryContent": "Inventário",
   "askDelete": "Deseja mesmo excluir?",
   "theme": "Tema",
-  "id": "ID"
+  "id": "ID",
+  "newIntegration": "Nova integração",
+  "deleteIntegration": "Excluir integração",
+  "askDeleteIntegration": "Deseja mesmo excluir esta integração?"
 }

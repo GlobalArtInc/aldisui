@@ -367,5 +367,8 @@
   "inventoryContent": "인벤토리",
   "askDelete": "정말 삭제할까요?",
   "theme": "테마",
-  "id": "ID"
+  "id": "ID",
+  "newIntegration": "새 통합",
+  "deleteIntegration": "통합 삭제",
+  "askDeleteIntegration": "이 통합을 삭제할까요?"
 }

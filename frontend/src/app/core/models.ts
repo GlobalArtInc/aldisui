@@ -78,6 +78,7 @@ export interface Template {
   type?: string;
   app?: TemplateApp;
   arguments?: string;
+  allow_override_args_in_task?: boolean;
   git_branch?: string;
   view_id?: number;
   autorun?: boolean;

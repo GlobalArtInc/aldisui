@@ -477,5 +477,8 @@
   "inventoryContent": "Inventář",
   "askDelete": "Opravdu smazat?",
   "theme": "Motiv",
-  "id": "ID"
+  "id": "ID",
+  "newIntegration": "Nová integrace",
+  "deleteIntegration": "Smazat integraci",
+  "askDeleteIntegration": "Opravdu chcete smazat tuto integraci?"
 }

@@ -7,6 +7,11 @@
     {{ 'run' | translate }}
   </button>
 
+  <button uiButton variant="secondary" type="button" (click)="edit()">
+    <ui-icon name="pencil" [size]="15"></ui-icon>
+    {{ 'settings' | translate }}
+  </button>
+
   <a uiButton variant="ghost" [routerLink]="['/project', projectId, 'templates']">
     <ui-icon name="arrow-left" [size]="15"></ui-icon>
     {{ 'taskTemplates' | translate }}
@@ -78,3 +83,10 @@
   [template]="selected()"
   (started)="started($event)"
   (closed)="selected.set(null)"></aldis-run-task-dialog>
+
+<aldis-template-dialog
+  [projectId]="projectId"
+  [template]="template()"
+  [opened]="formOpen()"
+  (saved)="savedTemplate()"
+  (closed)="formOpen.set(false)"></aldis-template-dialog>

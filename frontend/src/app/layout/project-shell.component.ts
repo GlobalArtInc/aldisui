@@ -9,6 +9,7 @@ import {
   UiIconComponent,
   UiMenuComponent,
   UiMenuItemDirective,
+  UiMenuSeparatorDirective,
   UiShellComponent,
   type UiNavSection,
 } from '@globalart/platform-ui';
@@ -16,6 +17,7 @@ import { ApiService } from '../core/api.service';
 import { LanguageMenuComponent } from './language-menu.component';
 import { ThemeToggleComponent } from './theme-toggle.component';
 import { TaskDialogComponent } from '../pages/project/task/task-dialog.component';
+import { ProjectDialogComponent, type ProjectDialogMode } from '../pages/projects/project-dialog.component';
 import { AuthService } from '../core/auth.service';
 import { ProjectService } from '../core/project.service';
 
@@ -31,9 +33,11 @@ import { ProjectService } from '../core/project.service';
     UiIconComponent,
     UiMenuComponent,
     UiMenuItemDirective,
+    UiMenuSeparatorDirective,
     LanguageMenuComponent,
     ThemeToggleComponent,
     TaskDialogComponent,
+    ProjectDialogComponent,
   ],
   templateUrl: './project-shell.component.html',
 })
@@ -93,13 +97,10 @@ export class ProjectShellComponent {
   }
 
   readonly all = this.projects.projects;
+  readonly dialog = signal<ProjectDialogMode>(null);
 
   goToProject(id: number): void {
     void this.router.navigate(['/project', id]);
-  }
-
-  goToProjects(): void {
-    void this.router.navigate(['/projects']);
   }
 
   signOut(): void {

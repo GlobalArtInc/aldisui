@@ -7,12 +7,14 @@ import {
   UiButtonDirective,
   UiDataTableComponent,
   UiIconComponent,
+  UiConfirmModalComponent,
   UiPageHeaderComponent,
   UiTdDirective,
   type UiColumn,
 } from '@globalart/platform-ui';
 import { ApiService } from '../../../core/api.service';
 import { RunTaskDialogComponent } from '../run/run-task-dialog.component';
+import { TemplateDialogComponent } from './template-dialog.component';
 import type { Task, Template } from '../../../core/models';
 import { statusLabel, statusTone } from '../../../core/task-status';
 
@@ -28,7 +30,9 @@ import { statusLabel, statusTone } from '../../../core/task-status';
     UiIconComponent,
     UiPageHeaderComponent,
     UiTdDirective,
+    UiConfirmModalComponent,
     RunTaskDialogComponent,
+    TemplateDialogComponent,
   ],
   host: { class: 'flex flex-col gap-6' },
   templateUrl: './templates.component.html',
@@ -41,6 +45,9 @@ export class TemplatesComponent {
   readonly projectId = Number(this.route.parent?.snapshot.paramMap.get('id'));
   readonly templates = signal<Template[] | null>(null);
   readonly selected = signal<Template | null>(null);
+  readonly editing = signal<Template | null>(null);
+  readonly formOpen = signal(false);
+  readonly removing = signal<Template | null>(null);
 
   readonly columns: UiColumn[] = [
     { title: 'ID', width: '80px' },
@@ -48,7 +55,7 @@ export class TemplatesComponent {
     { title: 'Playbook' },
     { title: 'Type' },
     { title: 'Last task' },
-    { title: '', align: 'right', width: '120px' },
+    { title: '', align: 'right', width: '200px' },
   ];
 
   readonly statusTone = statusTone;
@@ -58,9 +65,44 @@ export class TemplatesComponent {
     `${row.name} ${row.playbook}`.toLowerCase().includes(search.toLowerCase());
 
   constructor() {
-    void firstValueFrom(this.api.get<Template[]>(`project/${this.projectId}/templates`)).then((templates) =>
-      this.templates.set(templates ?? []),
-    );
+    void this.load();
+  }
+
+  create(): void {
+    this.editing.set(null);
+    this.formOpen.set(true);
+  }
+
+  edit(template: Template): void {
+    this.editing.set(template);
+    this.formOpen.set(true);
+  }
+
+  close(): void {
+    this.formOpen.set(false);
+    this.editing.set(null);
+  }
+
+  async saved(): Promise<void> {
+    this.close();
+    await this.load();
+  }
+
+  async remove(): Promise<void> {
+    const template = this.removing();
+    this.removing.set(null);
+
+    if (!template) {
+      return;
+    }
+
+    await firstValueFrom(this.api.delete(`project/${this.projectId}/templates/${template.id}`));
+    await this.load();
+  }
+
+  private async load(): Promise<void> {
+    const templates = await firstValueFrom(this.api.get<Template[]>(`project/${this.projectId}/templates`));
+    this.templates.set(templates ?? []);
   }
 
   open(template: Template): void {

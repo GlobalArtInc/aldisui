@@ -1,0 +1,101 @@
+<ui-modal [open]="open()" [config]="config()" [loading]="busy()" (action)="action($event)" (closed)="closed.emit()">
+  <div class="flex flex-col gap-4">
+    @if (failed()) {
+      <ui-alert tone="danger" [heading]="'error' | translate">{{ 'unknownError' | translate }}</ui-alert>
+    }
+
+    <div uiField>
+      <label uiLabel for="template-name">{{ 'name' | translate }} *</label>
+      <input id="template-name" uiInput type="text" [ngModel]="name()" (ngModelChange)="name.set($event)" />
+    </div>
+
+    <div uiField>
+      <label uiLabel for="template-description">{{ 'description' | translate }}</label>
+      <input
+        id="template-description"
+        uiInput
+        type="text"
+        [ngModel]="description()"
+        (ngModelChange)="description.set($event)" />
+    </div>
+
+    <div uiField>
+      <label uiLabel>{{ 'type' | translate }} *</label>
+      <ui-select
+        appendTo="body"
+        [items]="apps"
+        bindLabel="label"
+        bindValue="value"
+        [clearable]="false"
+        [value]="app()"
+        (valueChange)="app.set($any($event))"></ui-select>
+    </div>
+
+    <div uiField>
+      <label uiLabel>{{ 'repository' | translate }} *</label>
+      <ui-select
+        appendTo="body"
+        [items]="repositories()"
+        bindLabel="label"
+        bindValue="value"
+        [value]="repository()"
+        (valueChange)="repository.set($any($event))"></ui-select>
+    </div>
+
+    <div uiField>
+      <label uiLabel for="template-playbook">{{ 'playbook' | translate }} *</label>
+      <input
+        id="template-playbook"
+        uiInput
+        type="text"
+        [ngModel]="playbook()"
+        (ngModelChange)="playbook.set($event)" />
+    </div>
+
+    <div uiField>
+      <label uiLabel>{{ 'inventory' | translate }}</label>
+      <ui-select
+        appendTo="body"
+        [items]="inventories()"
+        bindLabel="label"
+        bindValue="value"
+        [value]="inventory()"
+        (valueChange)="inventory.set($any($event))"></ui-select>
+    </div>
+
+    <div uiField>
+      <label uiLabel>{{ 'environment' | translate }}</label>
+      <ui-select
+        appendTo="body"
+        [multiple]="true"
+        [items]="groups()"
+        bindLabel="label"
+        bindValue="value"
+        [value]="environments()"
+        (valueChange)="environments.set($any($event) ?? [])"></ui-select>
+      <span uiHint>{{ 'environmentsHint' | translate }}</span>
+    </div>
+
+    <div uiField>
+      <label uiLabel for="template-branch">{{ 'branch' | translate }}</label>
+      <input id="template-branch" uiInput type="text" [ngModel]="branch()" (ngModelChange)="branch.set($event)" />
+    </div>
+
+    <div uiField>
+      <label uiLabel for="template-args">{{ 'arguments' | translate }}</label>
+      <textarea
+        id="template-args"
+        uiInput
+        rows="3"
+        class="font-mono text-sm"
+        [ngModel]="args()"
+        (ngModelChange)="args.set($event)"></textarea>
+      <span uiHint>{{ 'cliArgsJsonArrayExampleIMyinventoryshPrivatekeythe' | translate }}</span>
+    </div>
+
+    <ui-switch
+      [checked]="overrideArgs()"
+      (checkedChange)="overrideArgs.set($event)"
+      [label]="'allowCliArgsInTask' | translate"></ui-switch>
+  </div>
+</ui-modal>

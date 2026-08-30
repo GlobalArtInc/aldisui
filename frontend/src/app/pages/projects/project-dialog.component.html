@@ -1,0 +1,48 @@
+<ui-modal
+  [open]="current() !== null"
+  [config]="config()"
+  [loading]="busy()"
+  (action)="action($event)"
+  (closed)="closed.emit()">
+  <div class="flex flex-col gap-4">
+    @if (failed()) {
+      <ui-alert tone="danger" [heading]="'error' | translate">{{ 'unknownError' | translate }}</ui-alert>
+    }
+
+    @if (current() === 'restore') {
+      <div uiField>
+        <label uiLabel for="project-backup">{{ 'backup' | translate }}</label>
+        <textarea
+          id="project-backup"
+          uiInput
+          rows="12"
+          class="font-mono text-sm"
+          [ngModel]="backup()"
+          (ngModelChange)="backup.set($event)"></textarea>
+      </div>
+    } @else {
+      <div uiField>
+        <label uiLabel for="project-new-name">{{ 'projectName' | translate }} *</label>
+        <input
+          id="project-new-name"
+          uiInput
+          type="text"
+          [ngModel]="name()"
+          (ngModelChange)="name.set($event)" />
+      </div>
+
+      <div uiField>
+        <label uiLabel for="project-new-parallel">{{ 'maxNumberOfParallelTasks' | translate }}</label>
+        <input
+          id="project-new-parallel"
+          uiInput
+          type="number"
+          min="0"
+          [ngModel]="parallel()"
+          (ngModelChange)="parallel.set($event)" />
+      </div>
+
+      <ui-switch [checked]="alert()" (checkedChange)="alert.set($event)" [label]="'alert' | translate"></ui-switch>
+    }
+  </div>
+</ui-modal>

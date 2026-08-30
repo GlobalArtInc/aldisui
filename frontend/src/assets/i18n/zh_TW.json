@@ -398,5 +398,8 @@
   "inventoryContent": "清單",
   "askDelete": "確定要刪除嗎？",
   "theme": "主題",
-  "id": "ID"
+  "id": "ID",
+  "newIntegration": "新增整合",
+  "deleteIntegration": "刪除整合",
+  "askDeleteIntegration": "確定要刪除此整合嗎？"
 }

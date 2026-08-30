@@ -21,6 +21,7 @@ import {
 } from '@globalart/platform-ui';
 import { ApiService } from '../../../core/api.service';
 import { RunTaskDialogComponent } from '../run/run-task-dialog.component';
+import { TemplateDialogComponent } from '../templates/template-dialog.component';
 import type { Task, Template } from '../../../core/models';
 import { statusLabel, statusTone, taskDuration } from '../../../core/task-status';
 
@@ -46,6 +47,7 @@ import { statusLabel, statusTone, taskDuration } from '../../../core/task-status
     UiThDirective,
     UiTrDirective,
     RunTaskDialogComponent,
+    TemplateDialogComponent,
   ],
   host: { class: 'flex flex-col gap-6' },
   templateUrl: './template.component.html',
@@ -62,6 +64,7 @@ export class TemplateComponent {
   readonly tasks = signal<Task[]>([]);
   readonly loading = signal(true);
   readonly selected = signal<Template | null>(null);
+  readonly formOpen = signal(false);
 
   readonly statusTone = statusTone;
   readonly statusLabel = statusLabel;
@@ -75,12 +78,21 @@ export class TemplateComponent {
     this.selected.set(this.template());
   }
 
+  edit(): void {
+    this.formOpen.set(true);
+  }
+
+  async savedTemplate(): Promise<void> {
+    this.formOpen.set(false);
+    await this.load();
+  }
+
   async started(task: Task): Promise<void> {
     this.selected.set(null);
     await this.router.navigate(['/project', this.projectId, 'tasks', task.id]);
   }
 
-  private async load(): Promise<void> {
+  async load(): Promise<void> {
     const [template, tasks] = await Promise.all([
       firstValueFrom(this.api.get<Template>(`project/${this.projectId}/templates/${this.templateId}`)),
       firstValueFrom(

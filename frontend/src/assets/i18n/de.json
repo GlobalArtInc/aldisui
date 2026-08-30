@@ -398,5 +398,8 @@
   "inventoryContent": "Inventar",
   "askDelete": "Wirklich löschen?",
   "theme": "Design",
-  "id": "ID"
+  "id": "ID",
+  "newIntegration": "Neue Integration",
+  "deleteIntegration": "Integration löschen",
+  "askDeleteIntegration": "Diese Integration wirklich löschen?"
 }

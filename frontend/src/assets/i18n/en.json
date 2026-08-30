@@ -569,5 +569,8 @@
   "copy": "Copy",
   "or": "or",
   "theme": "Theme",
-  "id": "ID"
+  "id": "ID",
+  "newIntegration": "New Integration",
+  "deleteIntegration": "Delete integration",
+  "askDeleteIntegration": "Do you really want to delete this integration?"
 }

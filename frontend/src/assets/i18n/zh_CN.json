@@ -367,5 +367,8 @@
   "inventoryContent": "清单",
   "askDelete": "确定要删除吗？",
   "theme": "主题",
-  "id": "ID"
+  "id": "ID",
+  "newIntegration": "新建集成",
+  "deleteIntegration": "删除集成",
+  "askDeleteIntegration": "确定要删除此集成吗？"
 }

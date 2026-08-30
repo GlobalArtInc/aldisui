@@ -20,9 +20,22 @@
 
       <div menuContent>
         @for (item of all(); track item.id) {
-          <button uiMenuItem type="button" (click)="goToProject(item.id)">{{ item.name }}</button>
+          <button uiMenuItem type="button" (click)="goToProject(item.id)">
+            <ui-avatar [name]="item.name" size="sm"></ui-avatar>
+            <span class="truncate">{{ item.name }}</span>
+          </button>
         }
-        <button uiMenuItem type="button" (click)="goToProjects()">{{ 'projects' | translate }}</button>
+
+        <span uiMenuSeparator></span>
+
+        <button uiMenuItem type="button" (click)="dialog.set('create')">
+          <ui-icon name="plus" [size]="15"></ui-icon>
+          {{ 'newProject' | translate }}
+        </button>
+        <button uiMenuItem type="button" (click)="dialog.set('restore')">
+          <ui-icon name="refresh-cw" [size]="15"></ui-icon>
+          {{ 'restoreProject' | translate }}
+        </button>
       </div>
     </ui-menu>
   </div>
@@ -51,4 +64,5 @@
   </div>
 
   <aldis-task-dialog></aldis-task-dialog>
+  <aldis-project-dialog [mode]="dialog()" (closed)="dialog.set(null)"></aldis-project-dialog>
 </ui-shell>

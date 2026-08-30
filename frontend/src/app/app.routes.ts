@@ -139,10 +139,33 @@ const RESOURCES: Record<string, ResourceConfig> = {
     path: 'integrations',
     icon: 'radio',
     emptyKey: 'none',
+    createKey: 'newIntegration',
+    deleteKey: 'deleteIntegration',
+    askKey: 'askDeleteIntegration',
     columns: [
       { title: 'id', field: 'id', kind: 'mono', width: '80px' },
       { title: 'name', field: 'name' },
       { title: 'type', field: 'auth_method', kind: 'badge' },
+    ],
+    fields: [
+      { name: 'name', label: 'name', required: true },
+      { name: 'template_id', label: 'template', type: 'select', source: 'templates', required: true },
+      {
+        name: 'auth_method',
+        label: 'type',
+        type: 'select',
+        value: '',
+        options: [
+          { label: 'None', value: '' },
+          { label: 'GitHub', value: 'github' },
+          { label: 'Bitbucket', value: 'bitbucket' },
+          { label: 'Token', value: 'token' },
+          { label: 'HMAC', value: 'hmac' },
+          { label: 'Basic', value: 'basic' },
+        ],
+      },
+      { name: 'auth_header', label: 'name', when: { field: 'auth_method', is: ['token', 'hmac'] } },
+      { name: 'searchable', label: 'active', type: 'switch' },
     ],
   },
   team: {

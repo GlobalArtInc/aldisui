@@ -370,5 +370,7 @@
   "id": "ID",
   "newIntegration": "新建集成",
   "deleteIntegration": "删除集成",
-  "askDeleteIntegration": "确定要删除此集成吗？"
+  "askDeleteIntegration": "确定要删除此集成吗？",
+  "backupFile": "备份文件",
+  "backupFileHint": "从项目导出的 JSON 文件"
 }

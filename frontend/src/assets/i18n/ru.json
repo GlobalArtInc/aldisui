@@ -379,5 +379,7 @@
   "id": "ID",
   "newIntegration": "Новая интеграция",
   "deleteIntegration": "Удалить интеграцию",
-  "askDeleteIntegration": "Действительно удалить эту интеграцию?"
+  "askDeleteIntegration": "Действительно удалить эту интеграцию?",
+  "backupFile": "Файл бэкапа",
+  "backupFileHint": "JSON-файл, выгруженный из проекта"
 }

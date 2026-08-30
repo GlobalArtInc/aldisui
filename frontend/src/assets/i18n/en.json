@@ -572,5 +572,7 @@
   "id": "ID",
   "newIntegration": "New Integration",
   "deleteIntegration": "Delete integration",
-  "askDeleteIntegration": "Do you really want to delete this integration?"
+  "askDeleteIntegration": "Do you really want to delete this integration?",
+  "backupFile": "Backup file",
+  "backupFileHint": "JSON file exported from a project"
 }

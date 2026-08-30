@@ -370,5 +370,7 @@
   "id": "ID",
   "newIntegration": "新しい連携",
   "deleteIntegration": "連携を削除",
-  "askDeleteIntegration": "この連携を削除しますか？"
+  "askDeleteIntegration": "この連携を削除しますか？",
+  "backupFile": "バックアップファイル",
+  "backupFileHint": "プロジェクトから書き出した JSON ファイル"
 }

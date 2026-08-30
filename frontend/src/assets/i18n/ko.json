@@ -370,5 +370,7 @@
   "id": "ID",
   "newIntegration": "새 통합",
   "deleteIntegration": "통합 삭제",
-  "askDeleteIntegration": "이 통합을 삭제할까요?"
+  "askDeleteIntegration": "이 통합을 삭제할까요?",
+  "backupFile": "백업 파일",
+  "backupFileHint": "프로젝트에서 내보낸 JSON 파일"
 }

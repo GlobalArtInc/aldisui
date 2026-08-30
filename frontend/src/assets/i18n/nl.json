@@ -370,5 +370,7 @@
   "id": "ID",
   "newIntegration": "Nieuwe integratie",
   "deleteIntegration": "Integratie verwijderen",
-  "askDeleteIntegration": "Weet je zeker dat je deze integratie wilt verwijderen?"
+  "askDeleteIntegration": "Weet je zeker dat je deze integratie wilt verwijderen?",
+  "backupFile": "Back-upbestand",
+  "backupFileHint": "JSON-bestand geëxporteerd uit een project"
 }

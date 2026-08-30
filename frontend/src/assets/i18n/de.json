@@ -401,5 +401,7 @@
   "id": "ID",
   "newIntegration": "Neue Integration",
   "deleteIntegration": "Integration löschen",
-  "askDeleteIntegration": "Diese Integration wirklich löschen?"
+  "askDeleteIntegration": "Diese Integration wirklich löschen?",
+  "backupFile": "Sicherungsdatei",
+  "backupFileHint": "Aus einem Projekt exportierte JSON-Datei"
 }

@@ -480,5 +480,7 @@
   "id": "ID",
   "newIntegration": "Nová integrace",
   "deleteIntegration": "Smazat integraci",
-  "askDeleteIntegration": "Opravdu chcete smazat tuto integraci?"
+  "askDeleteIntegration": "Opravdu chcete smazat tuto integraci?",
+  "backupFile": "Soubor zálohy",
+  "backupFileHint": "Soubor JSON exportovaný z projektu"
 }

@@ -11,15 +11,21 @@
 
     @if (current() === 'restore') {
       <div uiField>
-        <label uiLabel for="project-backup">{{ 'backup' | translate }}</label>
-        <textarea
-          id="project-backup"
+        <label uiLabel for="project-restore-name">{{ 'projectName' | translate }} *</label>
+        <input
+          id="project-restore-name"
           uiInput
-          rows="12"
-          class="font-mono text-sm"
-          [ngModel]="backup()"
-          (ngModelChange)="backup.set($event)"></textarea>
+          type="text"
+          [ngModel]="name()"
+          (ngModelChange)="name.set($event)" />
       </div>
+
+      <ui-file-drop
+        accept="application/json,.json"
+        [heading]="'backupFile' | translate"
+        [hint]="'backupFileHint' | translate"
+        [files]="files()"
+        (filesChange)="pick($event)"></ui-file-drop>
     } @else {
       <div uiField>
         <label uiLabel for="project-new-name">{{ 'projectName' | translate }} *</label>

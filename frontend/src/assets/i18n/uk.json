@@ -401,5 +401,7 @@
   "id": "ID",
   "newIntegration": "Нова інтеграція",
   "deleteIntegration": "Видалити інтеграцію",
-  "askDeleteIntegration": "Дійсно видалити цю інтеграцію?"
+  "askDeleteIntegration": "Дійсно видалити цю інтеграцію?",
+  "backupFile": "Файл резервної копії",
+  "backupFileHint": "JSON-файл, вивантажений з проєкту"
 }

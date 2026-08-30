@@ -370,5 +370,7 @@
   "id": "ID",
   "newIntegration": "Nowa integracja",
   "deleteIntegration": "Usuń integrację",
-  "askDeleteIntegration": "Czy na pewno usunąć tę integrację?"
+  "askDeleteIntegration": "Czy na pewno usunąć tę integrację?",
+  "backupFile": "Plik kopii zapasowej",
+  "backupFileHint": "Plik JSON wyeksportowany z projektu"
 }

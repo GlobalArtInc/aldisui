@@ -6,6 +6,7 @@ import { firstValueFrom } from 'rxjs';
 import {
   UiAlertComponent,
   UiFieldDirective,
+  UiFileDropComponent,
   UiInputDirective,
   UiLabelDirective,
   UiModalComponent,
@@ -26,6 +27,7 @@ export type ProjectDialogMode = 'create' | 'restore' | null;
     TranslatePipe,
     UiAlertComponent,
     UiFieldDirective,
+    UiFileDropComponent,
     UiInputDirective,
     UiLabelDirective,
     UiModalComponent,
@@ -50,7 +52,8 @@ export class ProjectDialogComponent {
     }
 
     if (value === 'restore') {
-      this.backup.set('');
+      this.name.set('');
+      this.files.set([]);
     }
   }
 
@@ -60,7 +63,7 @@ export class ProjectDialogComponent {
   readonly name = signal('');
   readonly parallel = signal(0);
   readonly alert = signal(false);
-  readonly backup = signal('');
+  readonly files = signal<File[]>([]);
   readonly busy = signal(false);
   readonly failed = signal(false);
 
@@ -111,8 +114,20 @@ export class ProjectDialogComponent {
     );
   }
 
-  private restore(): Promise<Project> {
-    return firstValueFrom(this.api.post<Project>('projects/restore', JSON.parse(this.backup())));
+  pick(files: File[]): void {
+    this.files.set(files);
+  }
+
+  private async restore(): Promise<Project> {
+    const file = this.files()[0];
+    if (!file) {
+      throw new Error('no backup file');
+    }
+
+    const backup = JSON.parse(await file.text()) as { meta?: Record<string, unknown> };
+    backup.meta = { ...(backup.meta ?? {}), name: this.name() };
+
+    return firstValueFrom(this.api.post<Project>('projects/restore', backup));
   }
 
   private t(key: string): string {

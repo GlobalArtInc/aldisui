@@ -3,11 +3,11 @@ name: Dev
 'on':
   push:
     branches:
-      - master
+      - main
       - 2-*-stable
   pull_request:
     branches:
-      - master
+      - main
 
 jobs:
   build-local:
@@ -606,7 +606,7 @@ jobs:
             org.opencontainers.image.vendor=AldisUI
             maintainer=Aldis UI <https://github.com/GlobalArtInc/aldisui/security/advisories/new>
           tags: |
-            type=raw,value=master
+            type=raw,value=main
           flavor: |
             latest=false
 
@@ -660,7 +660,7 @@ jobs:
             org.opencontainers.image.vendor=AldisUI
             maintainer=Aldis UI <https://github.com/GlobalArtInc/aldisui/security/advisories/new>
           tags: |
-            type=raw,value=master
+            type=raw,value=main
           flavor: |
             latest=false
 
@@ -709,7 +709,7 @@ jobs:
             org.opencontainers.image.vendor=AldisUI
             maintainer=Aldis UI <https://github.com/GlobalArtInc/aldisui/security/advisories/new>
           tags: |
-            type=raw,value=master
+            type=raw,value=main
           flavor: |
             latest=false
 
@@ -758,7 +758,7 @@ jobs:
             org.opencontainers.image.vendor=AldisUI
             maintainer=Aldis UI <https://github.com/GlobalArtInc/aldisui/security/advisories/new>
           tags: |
-            type=raw,value=master
+            type=raw,value=main
             type=raw,value=latest
           flavor: |
             latest=false
